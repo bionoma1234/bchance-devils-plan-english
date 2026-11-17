@@ -57,10 +57,11 @@ function renderRoom() {
   if (!r) {
     $('online-round').innerHTML = `<p class="notice">No live round is running. The host can begin a Square Count round while everyone stays connected.</p>${state.isHost ? '<button class="primary full" id="online-start">Start Square Count →</button>' : '<p class="tiny">Waiting for the host to start…</p>'}`;
   } else {
-    const squares = Array.from({length:r.size*r.size}, () => '<div></div>').join('');
-    const board = `<div class="squareboard" style="grid-template-columns:repeat(${r.size},1fr);max-width:${r.size*53}px">${squares}</div>`;
-    const status = `<p class="notice">${r.answeredIds.length} answer(s) submitted. ${r.revealed ? 'Results revealed.' : 'Count every square, including larger ones.'}</p>`;
-    const answerForm = !r.revealed && !hasAnswered ? '<form class="chatcomposer" id="online-guess-form"><input class="roomguess" id="online-guess" type="number" min="1" max="500" required placeholder="Total squares" aria-label="Your square count"><button class="primary" type="submit">Submit</button></form>' : '';
+    const isTarget = r.kind === 'target-sum';
+    const cells = isTarget ? r.values.map(v => `<div style="font-weight:800;background:#231e2b;color:#f3dfc1">${v}</div>`).join('') : Array.from({length:r.size*r.size}, () => '<div></div>').join('');
+    const board = (isTarget ? `<p class="notice">Find rectangles summing to <b style="color:var(--gold);font-size:21px">${r.target}</b></p>` : '<p class="notice">Legacy blank-grid round. Ask the host to start a new round for the updated rules.</p>') + `<div class="squareboard" style="grid-template-columns:repeat(${r.size},1fr);max-width:${r.size*53}px">${cells}</div>`;
+    const status = `<p class="notice">${r.answeredIds.length} answer(s) submitted. ${r.revealed ? 'Results revealed.' : (isTarget ? 'Count rectangular regions whose numbers sum to the target.' : 'Legacy blank-grid round.')}</p>`;
+    const answerForm = !r.revealed && !hasAnswered ? '<form class="chatcomposer" id="online-guess-form"><input class="roomguess" id="online-guess" type="number" min="1" max="500" required placeholder="Matching rectangles" aria-label="Your rectangle count"><button class="primary" type="submit">Submit</button></form>' : '';
     const result = r.revealed ? `<p class="success"><b>Correct answer: ${r.correctAnswer}</b></p><div class="roomplayers">${r.results.map(a=>`<span class="pill">${encodeHTML(a.name)}: ${a.guess} ${a.correct ? '✓' : '✕'}</span>`).join('') || '<span class="tiny">No answers were submitted.</span>'}</div>` : (hasAnswered ? '<p class="success">Answer submitted! Waiting for the host to reveal results.</p>' : '');
     const hostButtons = state.isHost ? `<div class="roomactions">${r.revealed ? '<button class="primary" id="online-next">New Round →</button>' : '<button class="secondary" id="online-reveal">Reveal Answers</button>'}<button class="ghost" id="online-clear">Clear Round</button></div>` : '';
     $('online-round').innerHTML = `${board}${status}${answerForm}${result}${hostButtons}`;

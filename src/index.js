@@ -119,17 +119,19 @@ export class GameRoom extends DurableObject {
     if (round) {
       liveRound = {
         id: round.id,
-        kind: 'square',
+        kind: Array.isArray(round.values) ? 'target-sum' : 'legacy-square',
         size: round.size,
+        values: round.values,
+        target: round.target,
         revealed: round.revealed,
         answeredIds: Object.keys(round.answers),
         ...(round.revealed ? {
-          correctAnswer: sumSquares(round.size),
+          correctAnswer: correctRoundAnswer(round),
           results: Object.entries(round.answers).map(([id, guess]) => ({
             id,
             name: players.find(p => p.id === id)?.name || 'Disconnected player',
             guess,
-            correct: guess === sumSquares(round.size),
+            correct: guess === correctRoundAnswer(round),
           })),
         } : {}),
       };
@@ -168,8 +170,8 @@ export class GameRoom extends DurableObject {
     }
 
     if (msg.type === 'start_square' && client.host) {
-      const size = 2 + Math.floor(Math.random() * 4);
-      await this.ctx.storage.put('round', { id: crypto.randomUUID(), size, answers: {}, revealed: false });
+      const puzzle = generateTargetSumRound();
+      await this.ctx.storage.put('round', { id: crypto.randomUUID(), ...puzzle, answers: {}, revealed: false });
       await this.broadcast();
       return;
     }
@@ -202,3 +204,31 @@ export class GameRoom extends DurableObject {
 }
 
 function sumSquares(n) { return Array.from({ length: n }, (_, i) => (n - i) ** 2).reduce((a, b) => a + b, 0); }
+
+function countTargetRectangles(values, n, target) {
+  let count=0;
+  for(let r1=0;r1<n;r1++)for(let c1=0;c1<n;c1++)for(let r2=r1;r2<n;r2++)for(let c2=c1;c2<n;c2++){
+    let sum=0;
+    for(let r=r1;r<=r2;r++)for(let c=c1;c<=c2;c++)sum+=values[r*n+c];
+    if(sum===target)count++;
+  }
+  return count;
+}
+function generateTargetSumRound() {
+  let last;
+  for(let attempts=0;attempts<150;attempts++){
+    const size=4+Math.floor(Math.random()*2);
+    const values=Array.from({length:size*size},()=>Math.floor(Math.random()*8));
+    const r1=Math.floor(Math.random()*size), c1=Math.floor(Math.random()*size);
+    const r2=r1+Math.floor(Math.random()*(size-r1)),c2=c1+Math.floor(Math.random()*(size-c1));
+    let target=0;
+    for(let r=r1;r<=r2;r++)for(let c=c1;c<=c2;c++)target+=values[r*size+c];
+    const count=countTargetRectangles(values,size,target);
+    last={size,values,target};
+    if(target>=3 && count>=2 && count<=35)return last;
+  }
+  return last;
+}
+function correctRoundAnswer(round) {
+  return Array.isArray(round.values) ? countTargetRectangles(round.values,round.size,round.target) : sumSquares(round.size);
+}

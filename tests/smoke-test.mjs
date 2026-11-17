@@ -39,7 +39,12 @@ let wsReq=(name,host,session)=>new Request(`https://room.internal/connect?name=$
 r=await room.fetch(wsReq('Host','SECRET','host-session-12345'));assert.equal(r.status,101);const hostWs=ctx.websockets.at(-1);assert.equal(hostWs.sent.at(-1).isHost,true);
 r=await room.fetch(wsReq('Guest','','guest-session-12345'));assert.equal(r.status,101);const guestWs=ctx.websockets.at(-1);assert.equal(guestWs.sent.at(-1).players.length,2);
 await room.webSocketMessage(hostWs,JSON.stringify({type:'start_square'}));const snapshot=guestWs.sent.at(-1);assert.equal(snapshot.round.revealed,false);assert.equal(snapshot.round.correctAnswer,undefined);
-const n=snapshot.round.size;const correct=Array.from({length:n},(_,i)=>(n-i)**2).reduce((a,b)=>a+b,0);
+const n=snapshot.round.size;
+assert.equal(snapshot.round.kind,'target-sum');
+assert.equal(snapshot.round.values.length,n*n);
+assert.ok(snapshot.round.target>=3);
+const count=(values,n,target)=>{let total=0;for(let a=0;a<n;a++)for(let b=0;b<n;b++)for(let c=a;c<n;c++)for(let d=b;d<n;d++){let sum=0;for(let r=a;r<=c;r++)for(let x=b;x<=d;x++)sum+=values[r*n+x];if(sum===target)total++;}return total;};
+const correct=count(snapshot.round.values,n,snapshot.round.target);
 await room.webSocketMessage(guestWs,JSON.stringify({type:'answer_square',guess:correct}));assert.equal(guestWs.sent.at(-1).round.answeredIds.length,1);assert.equal(guestWs.sent.at(-1).round.correctAnswer,undefined);
 await room.webSocketMessage(hostWs,JSON.stringify({type:'reveal_square'}));assert.equal(guestWs.sent.at(-1).round.correctAnswer,correct);assert.equal(guestWs.sent.at(-1).round.results[0].correct,true);
 await room.webSocketMessage(guestWs,JSON.stringify({type:'chat',text:'Hi all!'}));assert.equal(hostWs.sent.at(-1).chat[0].text,'Hi all!');
