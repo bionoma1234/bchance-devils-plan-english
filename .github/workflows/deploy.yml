@@ -38,6 +38,12 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npm run deploy
 
+      - name: Verify live game pages and WebSocket multiplayer
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        env:
+          JAKBOX_LIVE_BASE: https://bchance-devils-plan-english.bionoma1954.workers.dev
+        run: node tests/live-smoke.mjs
+
       - name: Explain skipped deployment
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
         run: echo "Deployment skipped. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repository Settings > Secrets and variables > Actions."
