@@ -8,6 +8,7 @@ The source for the **BChance Games** game library and its first playable collect
 | --- | --- |
 | `/` | BChance Games home and game catalog |
 | `/devils-plan/` | Devil's Plan game selection and legacy beta lobby |
+| `/devils-plan/heavy-13/` | Reconstructed Heavy 13 vs computer |
 | `/devils-plan/memory-poker/` | Reconstructed Memory Poker solo/AI game |
 | `/devils-plan/square-count/` | Reconstructed Square Count target-sum training |
 | `/api/health` | Server health response |
@@ -48,7 +49,7 @@ Create `public/your-game-slug/index.html` and add a playable card linking to `/y
 
 ## Current status and limitations
 
-The Devil's Plan adaptation now includes rule-based solo reconstructions of Memory Poker and Square Count. Heavy 13, Russian Roulette (fictional probability) and Cube Century remain experimental legacy prototypes clearly labeled as such. Its Cloudflare multiplayer beta includes six-character room codes, room chat, and synchronized Square Count rounds with server-checked answers. The Quoridor/Dice Devil Memory Poker rules and public Square Count descriptions inform the reconstructions, but exact UI and multiplayer parity with doke's site has **not** been verified. No registered user accounts, global leaderboard, moderation, or public production-scale protections are included. Rooms expire after 24 hours.
+The Devil's Plan adaptation now includes rule-based solo reconstructions of Heavy 13, Memory Poker and Square Count. Russian Roulette (fictional probability) and Cube Century remain experimental legacy prototypes clearly labeled as such. Its Cloudflare multiplayer beta includes six-character room codes, room chat, and synchronized Square Count rounds with server-checked answers. The Quoridor/Dice Devil Memory Poker rules and public Square Count descriptions inform the reconstructions, but exact UI and multiplayer parity with doke's site has **not** been verified. No registered user accounts, global leaderboard, moderation, or public production-scale protections are included. Rooms expire after 24 hours.
 
 The home page includes clear placeholders for future releases. It does not claim these games already exist.
 

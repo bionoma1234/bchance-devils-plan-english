@@ -1,0 +1,107 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Heavy 13 | BChance Games</title><meta name="theme-color" content="#120e17">
+<style>:root{color-scheme:dark;--bg:#0e0c13;--panel:#1c1520;--gold:#e7c189;--muted:#bcb0b9;--line:#5f4b56}*{box-sizing:border-box}body{background:radial-gradient(ellipse at 40% -20%,#443038 0,#120f18 50%,#090b11 100%);margin:0;color:#f5eff2;font:14px system-ui,Arial,sans-serif}a{color:var(--gold)}button{border:1px solid #7c6368;background:#342735;color:#fff;padding:11px 14px;border-radius:10px;font:700 13px system-ui;cursor:pointer}button:disabled{opacity:.38;cursor:not-allowed}button.primary{background:linear-gradient(120deg,#e9c896,#b79158);color:#21151e;border-color:#e4c48e}button:focus-visible{outline:3px solid #a5ecdf;outline-offset:3px}.wrap{width:min(1110px,calc(100% - 30px));margin:auto}.top{display:flex;justify-content:space-between;gap:12px;padding:20px 0;border-bottom:1px solid #ffffff22;font-size:12px;font-weight:800}.top a{text-decoration:none}.hero{text-align:center;padding:37px 0 25px}.hero .small{color:var(--gold);font-size:10px;letter-spacing:.25em;font-weight:800}.hero h1{font:700 clamp(48px,6vw,75px) Georgia,serif;margin:12px 0}.hero p{font-size:13px;color:var(--muted);line-height:1.8}.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;padding-bottom:70px}.panel{background:linear-gradient(145deg,#211924,#12121a);border:1px solid var(--line);border-radius:18px;padding:23px}.panel h2{font:600 23px Georgia,serif;margin:0 0 17px}.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.badge{padding:9px 12px;border:1px solid #755f64;border-radius:32px;font-size:11px;color:#e1cebe}.stands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:26px 0}.stand{min-width:0;border:1px solid #6e5258;background:#17141b;border-radius:14px;padding:13px;text-align:center;position:relative}.stand.red{border-top:5px solid #d65966}.stand.green{border-top:5px solid #66c4a0}.stand.blue{border-top:5px solid #73a7f5}.stand h3{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.stand .total{font:700 clamp(21px,3vw,32px) Georgia,serif;color:var(--gold);margin:13px 0 4px}.stand .stones{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:4px;min-height:65px}.stone{width:29px;height:28px;display:grid;place-items:center;background:linear-gradient(130deg,#a19d9a,#5d6364);border-radius:8px 8px 11px 10px;box-shadow:inset 2px 2px 4px #d4d1cb88,0 3px 2px #0007;color:#0b1215;font-weight:800;font-size:12px}.step{border-top:1px solid #564450;padding-top:18px;min-height:135px}.label{font-size:11px;color:#bbadb7;text-transform:uppercase;letter-spacing:.14em;font-weight:850;margin:17px 0 10px}.cards,.chips{display:flex;flex-wrap:wrap;gap:7px}.rock{min-width:46px;height:62px;font:700 25px Georgia,serif;background:#ddd2c1;color:#251c23;border:2px solid #e6cda4;border-radius:7px}.rock.active{outline:3px solid #e0a461}.chip{border-radius:22px;min-width:75px}.chip.red{border-color:#db6a75}.chip.green{border-color:#7accae}.chip.blue{border-color:#78acdf}.chip.rainbow{border-color:#e5b2f5}.chip.active{background:#685166;outline:2px solid #eed1a2}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.note{font-size:12px;line-height:1.8;color:#c1b6c2}.log{padding:12px;border:1px solid #5a4854;background:#161019;border-radius:10px;min-height:100px;max-height:260px;overflow:auto}.log p{font-size:11px;color:#c6b1be;margin:8px 0;line-height:1.6}.log b{color:#e5c399}.scores{border-collapse:collapse;width:100%;font-size:12px}.scores td,.scores th{padding:9px 5px;border-bottom:1px solid #4c3e4a;text-align:left}.scores td:last-child{text-align:right;color:var(--gold);font-weight:850}.rules p{color:#c4b4c2;font-size:12px;line-height:1.8}.hidden{display:none!important}footer{font-size:11px;color:#9d8b98;line-height:1.7;text-align:center;padding-bottom:40px}@media(max-width:770px){.layout{grid-template-columns:1fr}.panel{padding:16px}.stand{padding:9px}.stones{min-height:50px}.stone{width:24px;height:24px}.hero{padding:27px 0 20px}}</style></head>
+<body><div class="wrap"><nav class="top"><a href="/devils-plan/">← DEVIL'S PLAN</a><a href="/">BCHANCE GAMES ↗</a></nav>
+<header class="hero"><div class="small">ROCKS · CHIPS · RISK</div><h1>Heavy <span style="color:var(--gold)">13</span></h1><p>Choose a rock card and a color chip. Push a stand to 13 and take its penalties.</p></header>
+<div class="layout"><main class="panel"><div class="topline"><h2 id="phase">The three stands</h2><span class="badge" id="round">Quick game · 7 rounds</span></div><div class="stands" id="stands"></div><div class="step" id="stage"></div></main>
+<aside class="panel"><h2>Leaderboard</h2><table class="scores" id="scores"></table><div class="label">This round</div><div class="log" id="log"><p>Make your first move to begin.</p></div><div class="rules"><h2 style="margin-top:23px">Rules</h2><p>Each player gets rock cards 0–6, two chips each in red, green, and blue, and one rainbow chip. Everyone selects face-down together.</p><p>Rainbow chips place first, then larger rock cards. A rainbow can choose its stand when placed. You may pass once to move to the end of the order, except when already last.</p><p>When a stand reaches 13 or more, the player receives one penalty per rock already on it, even zero-valued rocks. The newly placed rock remains. Fewest penalties after seven rounds wins.</p><p>This four-player practice includes three computer opponents. Their strategy is simplified. Not a reproduction of the original site's multiplayer.</p><a href="https://quoridorgame.com/en/heavy-13/rules/" target="_blank" rel="noopener noreferrer">Complete reference rules ↗</a></div></aside></div>
+<footer>Independent fan-made English practice. Not affiliated with Netflix or the original game creator.</footer></div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);const colors=['red','green','blue'];
+let game=null;
+function newSet(p){p.cards=[0,1,2,3,4,5,6];p.chips={red:2,green:2,blue:2,rainbow:1};}
+function newGame(){
+ game={round:1,first:0,phase:'select',pickedCard:null,pickedChip:null,queue:[],logs:[],lastPenalized:null,stands:{red:[],green:[],blue:[]},players:Array.from({length:4},(_,i)=>({id:i,name:i===0?'You':'Computer '+i,penalty:0,lastPenaltyRound:0}))};
+ game.players.forEach(newSet);render();
+}
+function total(c){return game.stands[c].reduce((sum,v)=>sum+v.card,0);}
+function render(){
+ if(!game)return;
+ $('round').textContent='Round '+game.round+' / 7';
+ $('stands').innerHTML=colors.map(c=>'<div class="stand '+c+'"><h3>'+c+'</h3><div class="total">'+total(c)+' / 13</div><div class="stones">'+(game.stands[c].map(x=>'<div class="stone" title="'+x.name+'">'+x.card+'</div>').join('')||'<span class="note">Empty</span>')+'</div></div>').join('');
+ $('scores').innerHTML='<tr><th>Player</th><th>Penalty</th></tr>'+[...game.players].sort((a,b)=>a.penalty-b.penalty).map(p=>'<tr><td>'+(p.id===game.first?'✦ ':'')+p.name+'</td><td>−'+p.penalty+'</td></tr>').join('');
+ $('log').innerHTML=game.logs.map(x=>'<p>'+x+'</p>').join('')||'<p>Moves will appear here.</p>';
+ const stage=$('stage');stage.innerHTML='';
+ if(game.phase==='select'){
+  $('phase').textContent='Secretly select a rock and chip';
+  const you=game.players[0];
+  stage.innerHTML='<div class="note">Choose a rock card (0–6) and one color chip. The other players choose simultaneously.</div><div class="label">Rock cards</div><div class="cards" id="rockcards"></div><div class="label">Color chips</div><div class="chips" id="colorchips"></div><div class="actions"><button class="primary" id="commit" '+(game.pickedCard===null||!game.pickedChip?'disabled':'')+'>Reveal all moves →</button></div>';
+  $('rockcards').innerHTML=you.cards.map(n=>'<button class="rock '+(n===game.pickedCard?'active':'')+'" data-card="'+n+'">'+n+'</button>').join('');
+  $('colorchips').innerHTML=Object.entries(you.chips).filter(x=>x[1]>0).map(([c,n])=>'<button class="chip '+c+' '+(c===game.pickedChip?'active':'')+'" data-chip="'+c+'">'+c+' ×'+n+'</button>').join('');
+  stage.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{game.pickedCard=Number(b.dataset.card);render();});
+  stage.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{game.pickedChip=b.dataset.chip;render();});
+  $('commit').onclick=commit;
+ }else if(game.phase==='place'){
+  const m=game.queue[0];$('phase').textContent='Place the rocks in order';
+  if(!m){finishRound();return;}
+  if(m.id!==0){advance();return;}
+  const desc=m.chip==='rainbow'?'Rainbow chip. Choose a stand now.':'Your stand: '+m.chip.toUpperCase();
+  stage.innerHTML='<p class="note">Your turn to place rock <b>'+m.card+'</b>. '+desc+'</p><div class="actions" id="choices"></div>';
+  const actions=$('choices');
+  if(m.chip==='rainbow'){
+   actions.innerHTML=colors.map(c=>'<button data-place="'+c+'">Place on '+c+'</button>').join('');
+  }else actions.innerHTML='<button class="primary" data-place="'+m.chip+'">Place rock →</button>';
+  if(!m.passed&&game.queue.length>1)actions.innerHTML+='<button id="pass">Pass · go last</button>';
+  actions.querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>{place(m,b.dataset.place);game.queue.shift();advance();});
+  const p=$('pass');if(p)p.onclick=()=>{m.passed=true;game.queue.shift();game.queue.push(m);game.logs.push('You passed and will place last.');advance();};
+ }else if(game.phase==='review'){
+  $('phase').textContent='Round '+game.round+' complete';
+  stage.innerHTML='<p class="note">The round is over. The lowest penalty score is best. '+(game.lastPenalized!==null?game.players[game.lastPenalized].name+' takes first place in the next turn order.':'The starting player stays the same.')+'</p><button class="primary" id="next">Next round →</button>';
+  $('next').onclick=next;
+ }else if(game.phase==='finished'){
+  $('phase').textContent='Quick match complete';
+  const ordered=[...game.players].sort((a,b)=>a.penalty-b.penalty||a.lastPenaltyRound-b.lastPenaltyRound);
+  stage.innerHTML='<p class="note"><b>'+ordered[0].name+' wins!</b> Fewest penalty points after seven rounds. This is a simplified English computer-opponent adaptation.</p><button class="primary" id="restart">Play again →</button>';
+  $('restart').onclick=newGame;
+ }
+}
+function chooseBot(p){
+ const card=p.cards[Math.floor(Math.random()*p.cards.length)];
+ let chips=Object.entries(p.chips).filter(x=>x[1]>0).map(x=>x[0]);
+ chips.sort((a,b)=>{
+  const va=a==='rainbow'?Math.min(...colors.map(c=>total(c))):total(a);
+  const vb=b==='rainbow'?Math.min(...colors.map(c=>total(c))):total(b);
+  return va-vb;
+ });
+ return {id:p.id,card,chip:Math.random()<.6?chips[0]:chips[Math.floor(Math.random()*chips.length)],passed:false};
+}
+function commit(){
+ if(game.phase!=='select'||game.pickedCard===null||!game.pickedChip)return;
+ game.queue=[{id:0,card:game.pickedCard,chip:game.pickedChip,passed:false},...game.players.slice(1).map(chooseBot)];
+ game.queue.forEach(m=>{const p=game.players[m.id];p.cards.splice(p.cards.indexOf(m.card),1);p.chips[m.chip]--;});
+ game.queue.sort((a,b)=>((b.chip==='rainbow')-(a.chip==='rainbow'))||b.card-a.card||((a.id-game.first+4)%4)-((b.id-game.first+4)%4));
+ game.phase='place';game.logs=['Chip colors are revealed, then cards are sorted by placement order.'];advance();
+}
+function botColor(){let options=[...colors].sort((a,b)=>{const penaltyA=total(a)>=13?game.stands[a].length:0;const penaltyB=total(b)>=13?game.stands[b].length:0;return penaltyA-penaltyB||total(a)-total(b);});return options[0];}
+function place(m,color){
+ const p=game.players[m.id];let stack=game.stands[color];
+ const before=total(color),after=before+m.card;
+ if(after>=13){
+  const penalty=stack.length;
+  p.penalty+=penalty;p.lastPenaltyRound=game.round;game.lastPenalized=m.id;
+  game.logs.push('<b>'+p.name+'</b> placed '+m.card+' on '+color+'. Hit '+after+'! Received −'+penalty+' penalty for '+stack.length+' previous rocks.');
+  game.stands[color]=[{name:p.name,card:m.card}];
+ }else{
+  stack.push({name:p.name,card:m.card});
+  game.logs.push('<b>'+p.name+'</b> placed '+m.card+' on '+color+' ('+after+'/13).');
+ }
+}
+function advance(){
+ while(game.queue.length&&game.queue[0].id!==0){
+  const m=game.queue.shift();
+  let c=m.chip==='rainbow'?botColor():m.chip;
+  place(m,c);
+ }
+ if(!game.queue.length){finishRound();return;}render();
+}
+function finishRound(){game.phase='review';render();}
+function next(){
+ if(game.phase!=='review')return;
+ if(game.lastPenalized!==null)game.first=game.lastPenalized;
+ if(game.round>=7){game.phase='finished';render();return;}
+ game.round++;game.lastPenalized=null;game.phase='select';game.pickedCard=null;game.pickedChip=null;game.logs=[];render();
+}
+newGame();
+})();
+</script></body></html>
