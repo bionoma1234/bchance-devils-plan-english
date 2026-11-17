@@ -1,12 +1,12 @@
 {
   "name": "bchance-devils-plan-english",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node tests/smoke-test.mjs"
+    "test": "node tests/smoke-test.mjs && node tests/site-structure.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

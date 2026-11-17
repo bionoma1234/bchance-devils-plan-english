@@ -1,103 +1,58 @@
-# The Devil's Plan: English Game Hub | BChance Edition
+# BChance Games | Play Lab
 
-A fan-made English practice site with a working Cloudflare multiplayer **beta**. This is not a copy of the original creator's source code or official game artwork.
+The source for the **BChance Games** game library and its first playable collection, an unofficial English Devil's Plan fan adaptation.
 
-## Included
+## Pages
 
-- Five selectable games with local solo practice: Heavy 13, Russian Roulette (fictional probability game), Memory Poker, Square Count, Cube Century
-- Six-character live room creation and joining
-- Player nicknames, visible players/host and chat
-- Host-led **synchronized Square Count** game: shared board, individual submissions, hidden answers until reveal, server-verified results
-- Same-origin website and API on one Cloudflare Worker; one SQLite-backed Durable Object per room
-- Host may start, reveal and clear live Square Count rounds
-- High scores for solo games stored only in each browser's local storage
-- GitHub Actions deploy workflow
+| URL path | Purpose |
+| --- | --- |
+| `/` | BChance Games home and game catalog |
+| `/devils-plan/` | Devil's Plan English Edition (five solo challenges + multiplayer beta) |
+| `/api/health` | Server health response |
+| `/api/rooms` | Shared multiplayer rooms |
 
-**Not included yet:** authentic rule translations from the original game, multiplayer logic for Heavy 13 / Russian Roulette / Memory Poker / Cube Century, registered user accounts, persistent global leaderboards, moderation, anti-abuse controls, invite-by-URL, lobby passwords, or a managed production-scale service. Rooms expire 24 hours after creation. This is suitable for beta testing with friends, not an unmoderated public game service.
+Cloudflare Workers serves the static pages from `public/` and handles multiplayer through the existing Worker and SQLite-backed Durable Objects.
 
-## Quick deployment (Cloudflare account required)
-
-1. Install Node.js 22 or newer.
-2. Unzip the project. In the folder containing `package.json` and `wrangler.jsonc`, run:
-
-   ```bash
-   npm install
-   npm test
-   npx wrangler login
-   npm run dev
-   ```
-
-3. Open the local address displayed by Wrangler, generally `http://localhost:8787`, in your browser. Test rooms in two separate browser windows (ideally one incognito, or on another device connected to a URL reachable by both).
-4. Deploy:
-
-   ```bash
-   npm run deploy
-   ```
-
-5. Copy the `*.workers.dev` URL printed by Wrangler. The site and backend work there, without using your personal domain yet.
-
-Cloudflare Workers has a Free plan and SQLite-backed Durable Objects are supported on it within usage limits. A Cloudflare login and deployment permissions are required; no local database server is needed.
-
-## Connect games.bchance.co (recommended)
-
-**Keep your main website `bchance.co` where it is.** Only add the new game subdomain.
-
-If `bchance.co` is already an active **Cloudflare DNS zone**:
-1. Cloudflare dashboard → **Workers & Pages** → **bchance-devils-plan-english**.
-2. **Settings → Domains & Routes → Add → Custom Domain**.
-3. Enter `games.bchance.co`, confirm, and let Cloudflare manage the required DNS record and HTTPS certificate.
-4. Verify `https://games.bchance.co` opens and `/api/health` returns JSON.
-
-If your DNS is hosted elsewhere, you cannot attach a Cloudflare Worker custom domain until the DNS zone is on Cloudflare. One path is to add `bchance.co` to Cloudflare and switch authoritative nameservers at the domain registrar, **after carefully copying all existing DNS records (website, email/MX, SPF, DKIM, etc.)**. Do not change the existing root or `www` records unless you intend to migrate the portfolio site. Alternatively keep your game temporarily on its `workers.dev` URL.
-
-## Host source code on GitHub with auto-deploy
-
-1. Create a new repository, e.g. `bchance-devils-plan-english`.
-2. Upload **the contents of this ZIP as the repository root**, preserving `.github/workflows/deploy.yml`, `public/`, `src/`, `package.json`, and `wrangler.jsonc`.
-3. In your Cloudflare dashboard, find your **Account ID** and create a scoped API token with permissions needed to deploy Workers and Durable Objects. The domain/zone may require additional edit rights when configuring a custom domain.
-4. GitHub repository → **Settings → Secrets and variables → Actions** → create two secrets:
-   - `CLOUDFLARE_API_TOKEN` = the Cloudflare API token
-   - `CLOUDFLARE_ACCOUNT_ID` = the Cloudflare Account ID
-5. Push to the `main` branch or trigger **Actions → Deploy game to Cloudflare → Run workflow**. GitHub Actions uses Wrangler to deploy the site and backend together.
-
-**Never commit API tokens, passwords, or secrets into source files.** You do not need to put your Cloudflare account ID inside source files if you pass it to the GitHub Action as configured here.
-
-## Why not GitHub Pages alone?
-
-GitHub Pages can host a static `index.html` with custom DNS, but it cannot run Durable Objects or WebSockets servers. `public/index.html` will still have local solo practice on GitHub Pages, but live room features require an API backend. This project intentionally uses **Cloudflare Workers for both frontend and backend**, with **GitHub as the source code and deployment trigger** to avoid CORS and extra API domains.
+The **internal Cloudflare Worker name** remains `bchance-devils-plan-english` so current GitHub credentials and deployment configuration do not need to change. The eventual public domain is `games.bchance.co`.
 
 ## Project structure
 
-```text
-public/index.html            English interface + live multiplayer client
-src/index.js                 API + Durable Object multiplayer room server
-wrangler.jsonc               Cloudflare deployment configuration
-package.json                 Scripts and Wrangler dependency
-.github/workflows/deploy.yml GitHub automatic deployment
- tests/smoke-test.mjs        Minimal backend room-game smoke test
+```
+public/
+  index.html                  # Games catalog
+  devils-plan/index.html      # Devil's Plan English Edition
+src/index.js                  # Cloudflare Worker API + GameRoom Durable Object
+tests/smoke-test.mjs          # Server-side test
+tests/site-structure.mjs      # Checks the hub/game page paths
+wrangler.jsonc                # Cloudflare configuration
+.github/workflows/deploy.yml  # GitHub Actions auto-deploy
 ```
 
-## API endpoints
+## Deploy
 
-- `GET /api/health`: service health
-- `POST /api/rooms`: creates room `{ "gameId": "square" }`, returns code and host token
-- `GET /api/rooms/ABCDEF`: public room metadata
-- `GET /api/rooms/ABCDEF/socket?...`: WebSocket (browser client handles this)
+The GitHub workflow runs tests then deploys on commits to `main` using two GitHub Actions repository secrets: `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 
-The host token grants room-host privileges and should not be shared publicly. The six-character code lets guests join. We currently treat room codes as invitations, not strong secrets.
+1. Register a `workers.dev` account subdomain in Cloudflare Workers if you have not yet done so.
+2. Confirm the above secrets are configured. Never commit credentials to GitHub.
+3. Open the GitHub Actions tab and run **Deploy game to Cloudflare**, or push to `main`.
+4. Check the Worker URL and test `/`, `/devils-plan/`, and `/api/health`. For multiplayer, create a Square Count room and join from a second browser/device.
+5. After verifying, add the domain in Cloudflare: **Workers & Pages → bchance-devils-plan-english → Settings → Domains & Routes → Add → Custom Domain → games.bchance.co**. A custom domain requires an active `bchance.co` Cloudflare DNS zone. Keep your portfolio DNS records intact.
 
-## Testing and limitations
+Node.js 22+ manual local development: `npm install`, `npm test`, `npx wrangler dev`.
 
-`npm test` checks simulated room creation, host/guest WebSocket connections, Square Count answers and results, and chat. It does **not** emulate the entire Cloudflare runtime. Before inviting users, test a deployed Worker from two browsers, including reconnection and mobile layouts. Keep an eye on the Cloudflare dashboard for quota and runtime errors.
+## Add another game
 
-## Attribution
+Create `public/your-game-slug/index.html` and add a playable card linking to `/your-game-slug/` in `public/index.html`. If the game needs online players, extend `src/index.js` with separately namespaced API endpoints or a dedicated Worker as the library grows.
 
-Independent fan-made English adaptation. Not affiliated with Netflix or the original site creator. If you intend to distribute widely, confirm permissions for any third-party branding or game material. This version uses original practice game interpretations rather than claiming verified reproduction of the original rules.
+## Current status and limitations
 
-## Official references
+The Devil's Plan adaptation includes solo practice interpretations of Heavy 13, Russian Roulette (fictional probability), Memory Poker, Square Count, and Cube Century. Its Cloudflare multiplayer beta includes six-character room codes, room chat, and synchronized Square Count rounds with server-checked answers. Original game rules have **not** been verified or fully replicated. No registered user accounts, global leaderboard, moderation, or public production-scale protections are included. Rooms expire after 24 hours.
 
-- Cloudflare static assets: https://developers.cloudflare.com/workers/static-assets/
-- Cloudflare Durable Objects: https://developers.cloudflare.com/durable-objects/
-- Cloudflare Worker custom domains: https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
-- GitHub Actions deployment: https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/
-- GitHub Pages custom domains (static-only alternative): https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages
+The home page includes clear placeholders for future releases. It does not claim these games already exist.
+
+Independent fan-made game project; not affiliated with Netflix or the original site's creator. Confirm third-party rights before wider distribution.
+
+Official references:
+- https://developers.cloudflare.com/workers/static-assets/routing/advanced/serving-a-subdirectory/
+- https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
+- https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/

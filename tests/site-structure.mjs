@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const root = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
+const game = fs.readFileSync(new URL('../public/devils-plan/index.html', import.meta.url), 'utf8');
+const worker = fs.readFileSync(new URL('../src/index.js', import.meta.url), 'utf8');
+assert.match(root, /BChance Games/i);
+assert.match(root, /href="\/devils-plan\/"/);
+assert.match(game, /Devil.?s Plan/i);
+assert.match(game, /href="\/"/);
+assert.match(worker, /\/api\/health/);
+assert.match(worker, /env\.ASSETS\.fetch\(request\)/);
+console.log('PASS: BChance Games landing page, nested Devil\'s Plan route, and shared API.');
