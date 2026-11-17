@@ -59,3 +59,16 @@ Official references:
 - https://developers.cloudflare.com/workers/static-assets/routing/advanced/serving-a-subdirectory/
 - https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
 - https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/
+
+
+## Live multiplayer (beta)
+
+All five game selections can now create a private room code with synchronized websocket state, chat, ready checks, host start/next-round controls, automatic round timers and server-side validation. Join links follow `/devils-plan/room/?code=ABCDEF` and rooms use the existing Cloudflare Durable Object.
+
+- **Memory Poker**: synchronized 20-second memorization and 60-second choice with hidden selections, shared community cards and poker-hand ranking.
+- **Heavy 13**: synchronized rock/chip commitments, server ordered placement, rainbow choice, passing and penalties.
+- **Square Count**: simultaneous answer submission and server-side rectangle-count scoring.
+- **Cube Century / Count the Cubes beta**: shared 3D stacked-cube counting puzzles and scoring. This is **not a verified recreation** of the original Cube Century.
+- **Russian Roulette beta**: exactly six players, virtual credits, private/public investigation, rotation and seat result. Not a verified pixel- or rule-perfect copy of the original site.
+
+The new multiplayer mode is an independent interpretation of documented gameplay, not a complete recreation of the referenced website. Live cross-browser behavior and visual parity still need manual verification.

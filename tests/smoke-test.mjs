@@ -1,3 +1,4 @@
+import * as GameEngines from '../src/multiplayer.js';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
@@ -24,10 +25,11 @@ let lastPair;
 function WebSocketPair(){lastPair={0:new MockWS,1:new MockWS};return lastPair}
 class BaseDO{constructor(ctx,env){this.ctx=ctx;this.env=env}}
 const source=fs.readFileSync(new URL('../src/index.js', import.meta.url), 'utf8')
+.replace("import { createMatch, act, advanceIfDue, view } from './multiplayer.js';",'const { createMatch, act, advanceIfDue, view } = globalThis.GameEngines;')
 .replace("import { DurableObject } from 'cloudflare:workers';",'const DurableObject = globalThis.BaseDO;')
 .replace('export default {','const worker = {')
 .replace('export class GameRoom','class GameRoom') + '\nglobalThis.exports={worker,GameRoom};';
-const context={BaseDO,Response:MockResponse,Request,URL,crypto:webcrypto,WebSocketPair,Date,Math,console};
+const context={GameEngines,BaseDO,Response:MockResponse,Request,URL,crypto:webcrypto,WebSocketPair,Date,Math,console};
 vm.runInNewContext(source,context);
 const {worker,GameRoom}=context.exports;
 const ctx={storage:new MockStorage(),websockets:[],getWebSockets(){return this.websockets.filter(x=>!x.closed)},acceptWebSocket(ws){this.websockets.push(ws)}};
@@ -49,3 +51,28 @@ await room.webSocketMessage(guestWs,JSON.stringify({type:'answer_square',guess:c
 await room.webSocketMessage(hostWs,JSON.stringify({type:'reveal_square'}));assert.equal(guestWs.sent.at(-1).round.correctAnswer,correct);assert.equal(guestWs.sent.at(-1).round.results[0].correct,true);
 await room.webSocketMessage(guestWs,JSON.stringify({type:'chat',text:'Hi all!'}));assert.equal(hostWs.sent.at(-1).chat[0].text,'Hi all!');
 console.log('PASS: room initialization, host/guest, WebSockets, Square Count server scoring, and chat.');
+
+await room.webSocketMessage(hostWs,JSON.stringify({type:'ready',ready:true}));
+await room.webSocketMessage(guestWs,JSON.stringify({type:'ready',ready:true}));
+assert.equal(hostWs.sent.at(-1).players.every(x=>x.ready),true);
+await room.webSocketMessage(hostWs,JSON.stringify({type:'start_match'}));
+let match=hostWs.sent.at(-1).match;
+assert.equal(match.gameId,'square');
+assert.equal(match.phase,'answer');
+assert.equal(match.answer,undefined);
+const matchCorrect=(()=>{
+ let n=match.size,v=match.values,target=match.target,total=0;
+ for(let a=0;a<n;a++)for(let b=0;b<n;b++)for(let c=a;c<n;c++)for(let d=b;d<n;d++){
+ let sum=0;for(let y=a;y<=c;y++)for(let x=b;x<=d;x++)sum+=v[y*n+x];
+ if(sum===target)total++;
+ }return total;
+})();
+await room.webSocketMessage(hostWs,JSON.stringify({type:'game_action',action:{type:'answer',guess:matchCorrect}}));
+await room.webSocketMessage(guestWs,JSON.stringify({type:'game_action',action:{type:'answer',guess:matchCorrect}}));
+match=hostWs.sent.at(-1).match;
+assert.equal(match.phase,'result');
+assert.equal(match.answer,matchCorrect);
+assert.equal(match.points['host-session-12345'],1);
+await room.webSocketMessage(hostWs,JSON.stringify({type:'next_round'}));
+assert.equal(guestWs.sent.at(-1).match.round,2);
+console.log('PASS: shared ready state, protected match start, synchronized answers, authoritative scoring, and next round.');

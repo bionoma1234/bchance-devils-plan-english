@@ -1,10 +1,11 @@
+import { createMatch, act, advanceIfDue, view } from './multiplayer.js';
 import { DurableObject } from 'cloudflare:workers';
 
 const GAME_IDS = new Set(['heavy', 'roulette', 'poker', 'square', 'cube']);
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CHAT_LIMIT = 30;
 const ROOM_LIFETIME_MS = 24 * 60 * 60 * 1000;
-const ROOM_MAX_PLAYERS = { heavy: 7, roulette: 6, poker: 16, square: 16, cube: 16 };
+const ROOM_MAX_PLAYERS = { heavy: 8, roulette: 6, poker: 16, square: 16, cube: 6 };
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -77,7 +78,7 @@ export class GameRoom extends DurableObject {
         createdAt: Date.now(),
         expiresAt: Date.now() + ROOM_LIFETIME_MS,
       };
-      await this.ctx.storage.put({ meta, chat: [], round: null });
+      await this.ctx.storage.put({ meta, chat: [], round: null, match: null, ready: {} });
       return json({ ok: true }, 201);
     }
 
@@ -111,9 +112,11 @@ export class GameRoom extends DurableObject {
     const meta = await this.ctx.storage.get('meta');
     const chat = await this.ctx.storage.get('chat') || [];
     const round = await this.ctx.storage.get('round');
+    const match = await this.ctx.storage.get('match') || null;
+    const ready = await this.ctx.storage.get('ready') || {};
     const players = Array.from(new Map(this.ctx.getWebSockets().map(s => {
       const a = s.deserializeAttachment();
-      return [a.sessionId, { id: a.sessionId, name: a.name, host: a.host }];
+      return [a.sessionId, { id: a.sessionId, name: a.name, host: a.host, ready: !!ready[a.sessionId] }];
     })).values());
     let liveRound = null;
     if (round) {
@@ -139,7 +142,7 @@ export class GameRoom extends DurableObject {
     return {
       type: 'state', room: { code: meta.code, gameId: meta.gameId, maxPlayers: ROOM_MAX_PLAYERS[meta.gameId] },
       isHost: Boolean(ws.deserializeAttachment()?.host),
-      players, chat, round: liveRound,
+      players, chat, round: liveRound, match: view(match,ws.deserializeAttachment()?.sessionId),
     };
   }
 
@@ -166,6 +169,54 @@ export class GameRoom extends DurableObject {
       chat.push({ id: crypto.randomUUID(), name: client.name, text: message, at: now });
       await this.ctx.storage.put('chat', chat.slice(-CHAT_LIMIT));
       await this.broadcast();
+      return;
+    }
+
+
+    // Unified, server-authoritative multiplayer. Legacy square messages remain
+    // available for rooms created by older clients.
+    if (msg.type === 'ready') {
+      const ready = await this.ctx.storage.get('ready') || {};
+      ready[client.sessionId] = !!msg.ready;
+      await this.ctx.storage.put('ready',ready);
+      await this.broadcast();
+      return;
+    }
+    if (msg.type === 'start_match' && client.host) {
+      const existing = await this.ctx.storage.get('match');
+      if (existing && existing.phase !== 'complete') return;
+      const sockets = this.ctx.getWebSockets();
+      const people = [...new Map(sockets.map(s => {
+        const a=s.deserializeAttachment();
+        return [a.sessionId,{id:a.sessionId,name:a.name}];
+      })).values()];
+      const ready = await this.ctx.storage.get('ready') || {};
+      if (!people.length || people.some(p=>!ready[p.id])) {
+        ws.send(JSON.stringify({type:'error',message:'Every connected player must press Ready before starting.'}));
+        return;
+      }
+      try {
+        const match=createMatch(meta.gameId,people);
+        await this.ctx.storage.put('match',match);
+        await this.scheduleMatch(match);
+        await this.broadcast();
+      } catch(e) {
+        ws.send(JSON.stringify({type:'error',message:e?.message||'Unable to start this game.'}));
+      }
+      return;
+    }
+    if (msg.type === 'game_action' || msg.type === 'next_round') {
+      const match = await this.ctx.storage.get('match');
+      if (!match) return;
+      const wasDue=advanceIfDue(match);
+      const accepted = msg.type === 'next_round'
+        ? (client.host && act(match,client.sessionId,{type:'next'}))
+        : act(match,client.sessionId,msg.action);
+      if (wasDue || accepted) {
+        await this.ctx.storage.put('match',match);
+        await this.scheduleMatch(match);
+        await this.broadcast();
+      } else if(!accepted) ws.send(JSON.stringify({type:'error',message:'Action unavailable, invalid, or already submitted.'}));
       return;
     }
 
@@ -197,6 +248,23 @@ export class GameRoom extends DurableObject {
       await this.ctx.storage.put('round', null);
       await this.broadcast();
     }
+  }
+
+  async scheduleMatch(match) {
+    if (match?.deadline && match.deadline>Date.now() &&
+        typeof this.ctx.storage.setAlarm === 'function') await this.ctx.storage.setAlarm(match.deadline);
+  }
+
+  async alarm() {
+    const meta=await this.ctx.storage.get('meta');
+    if (!meta || meta.expiresAt<=Date.now()) return;
+    const match=await this.ctx.storage.get('match');
+    if (!match) return;
+    if (advanceIfDue(match)) {
+      await this.ctx.storage.put('match',match);
+      await this.scheduleMatch(match);
+      await this.broadcast();
+    } else await this.scheduleMatch(match);
   }
 
   async webSocketClose() { await this.broadcast(); }

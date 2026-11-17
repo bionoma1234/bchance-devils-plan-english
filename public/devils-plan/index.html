@@ -97,7 +97,6 @@ async function connectRoom(code, hostToken = '', nickname) {
   socket.onerror = () => { console.warn('Room connection failed'); };
 }
 $('create').onclick = async () => {
-  if (games[selected].id !== 'square') { show('Multiplayer unavailable', '<p class="notice">Live multiplayer is implemented only for Square Count. Heavy 13 and Memory Poker currently have reconstructed solo/computer modes, while Russian Roulette and Cube Century are experimental prototypes.</p>'); return; }
   const name = roomName(); if (name === null) return;
   show('Creating Live Room', '<p class="notice">Requesting your six-character room code…</p>');
   try {
@@ -106,14 +105,14 @@ $('create').onclick = async () => {
     if (!response.ok) throw new Error(data.error || 'Could not create room.');
     sessionStorage.setItem(`dp3_host_${data.code}`, data.hostToken);
     inputs.forEach((input, i) => { input.value = data.code[i]; });
-    connectRoom(data.code, data.hostToken, name);
+    location.assign('/devils-plan/room/?code='+data.code);
   } catch (err) { show('Room unavailable', `<p class="notice">${encodeHTML(err.message)}. This requires a deployed Cloudflare backend. The local HTML demo still supports solo practice.</p>`); }
 };
 $('join').onclick = () => {
   const code = inputs.map(input => input.value).join('').toUpperCase();
   if (!/^[A-HJ-NP-Z2-9]{6}$/.test(code)) { show('Invalid Room Code', '<p class="notice">Enter the full six-character code sent by the host.</p>'); return; }
   const name = roomName(); if (name === null) return;
-  connectRoom(code, sessionStorage.getItem(`dp3_host_${code}`) || '', name);
+  location.assign('/devils-plan/room/?code='+code);
 };
 
 </script></body></html>

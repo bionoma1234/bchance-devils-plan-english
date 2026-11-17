@@ -21,3 +21,9 @@ assert.match(engine,/DP3Poker/);
 assert.match(server,/\/api\/health/);
 assert.match(server,/env\.ASSETS\.fetch\(request\)/);
 console.log('PASS: hub, game routes, three reconstructed games, Poker engine, and shared API');
+
+const room = readFileSync(new URL('../public/devils-plan/room/index.html',import.meta.url),'utf8');
+assert.match(room,/start_match/);
+assert.match(room,/game_action/);
+assert.match(room,/I’m ready/);
+console.log('PASS: shared five-game multiplayer room controls');
