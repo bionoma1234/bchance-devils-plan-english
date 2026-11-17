@@ -12,6 +12,13 @@ async function verifyPage(path,expected){
 }
 assert.equal(typeof WebSocket,'function','Node 22+ WebSocket is required');
 await verifyPage('/jakbox/','Prompt Clash');
+await verifyPage('/jakbox/','jak:faker');
+console.log('LIVE STEP custom domain sixth-game check');
+const custom=await withTimeout(fetch('https://games.bchance.co/jakbox/',{headers:{'cache-control':'no-cache'}}),20000);
+assert.equal(custom.status,200,'Custom-domain JakBox must respond HTTP 200');
+const customHTML=await custom.text();
+assert.ok(customHTML.includes('jak:faker'),'Custom domain is not serving the new sixth game');
+console.log('LIVE OK custom domain Fake Out game card ('+customHTML.length+' bytes)');
 await verifyPage('/jakbox/room/','PRIVATE PARTY ROOM');
 await verifyPage('/devils-plan/','Devil');
 console.log('LIVE STEP api health request');
