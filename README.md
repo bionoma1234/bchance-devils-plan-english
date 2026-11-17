@@ -72,3 +72,19 @@ All five game selections can now create a private room code with synchronized we
 - **Russian Roulette beta**: exactly six players, virtual credits, private/public investigation, rotation and seat result. Not a verified pixel- or rule-perfect copy of the original site.
 
 The new multiplayer mode is an independent interpretation of documented gameplay, not a complete recreation of the referenced website. Live cross-browser behavior and visual parity still need manual verification.
+
+
+## JakBox: five independent party games
+
+- URL: \`/jakbox/\`; room controller: \`/jakbox/room/?code=ABCDEF\`.
+- Five distinct game modes: Prompt Clash (Quiplash-inspired), Truth Trap (Fibbage-inspired), Sketch Bluff (Drawful-inspired), Split Vote (Split the Room-inspired), Shirt Showdown (Tee K.O.-inspired).
+- Mechanics studied from the official Jackbox Games pages:
+  - https://www.jackboxgames.com/games/quiplash
+  - https://www.jackboxgames.com/games/fibbage-4
+  - https://www.jackboxgames.com/games/the-jackbox-party-pack-1/drawful
+  - https://www.jackboxgames.com/games/split-the-room
+  - https://www.jackboxgames.com/games/tee-k-o-2
+- Differences from the commercial products: new prompts, simplified rounds, custom scoring, no licensed assets/audio/host characters, no audience mode or proprietary Jackbox integrations. Six-character BChance room codes, not Jackbox's original four-letter codes.
+- Multiplayer backend: reuses \`GameRoom\` Cloudflare Durable Object for room create/join, per-player private state, ready checks, in-room chat, timed stage transitions, server-authoritative vote scoring, scoring and reconnection. The beta needs multi-device acceptance testing.
+- Drawing: touch-enabled 2D stroke input with server-side point validation; graphics are player-generated and are not copied assets. No room at \`jackbox.tv\` can be joined with a JakBox code.
+- Names and source references are included solely to document gameplay inspiration. This independent project is not affiliated with Jackbox Games, Inc.

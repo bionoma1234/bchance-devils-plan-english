@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node tests/smoke-test.mjs && node tests/site-structure.mjs && node tests/poker-engine.mjs && node tests/multiplayer-engines.mjs && node tests/front-end-syntax.mjs"
+    "test": "node tests/smoke-test.mjs && node tests/site-structure.mjs && node tests/poker-engine.mjs && node tests/multiplayer-engines.mjs && node tests/front-end-syntax.mjs && node tests/jakbox-engines.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

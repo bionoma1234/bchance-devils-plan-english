@@ -1,0 +1,191 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111229"><title>JakBox Party Room | BChance Games</title>
+<style>
+:root{color-scheme:dark;--ink:#fff9ff;--muted:#bbb5cf;--cyan:#8aede4;--pink:#ffb8de;--purple:#cdb4ff;--line:#605b7b}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#4c396c 0,transparent 44%),radial-gradient(circle at 0 60%,#18525b,transparent 39%),#0c0e23;color:var(--ink);font:14px system-ui,Arial,sans-serif}a{color:var(--cyan)}button,input,textarea,select{font:inherit}button{background:#322b4b;color:var(--ink);border:1px solid #79688e;padding:12px 15px;border-radius:11px;cursor:pointer;font-weight:780}button:hover:not(:disabled){filter:brightness(1.15);border-color:var(--cyan)}button:disabled{opacity:.38;cursor:not-allowed}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #a9f5e7;outline-offset:3px}.primary{background:linear-gradient(110deg,#8df7e7,#b3d3ff);color:#101226;border-color:#b4f9ee}.wrap{width:min(1220px,calc(100% - 30px));margin:auto}nav{padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #ffffff20;font-size:12px;font-weight:800}nav a{text-decoration:none}.brand{font-size:19px;color:var(--cyan)}.brand span{color:var(--pink)}.hero{text-align:center;padding:37px 0 22px}.eyebrow{font-size:10px;font-weight:850;letter-spacing:.24em;color:var(--cyan)}h1{font-size:clamp(37px,6.2vw,68px);letter-spacing:-.07em;margin:12px 0;line-height:1.05}.sub{color:var(--muted);font-size:13px;line-height:1.7}.status{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}.pill{border:1px solid #716785;border-radius:25px;padding:9px 12px;color:#e7dcf5;font-size:11px}.roomcode{font-size:15px;letter-spacing:.2em;color:var(--cyan);font-weight:900}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:19px;margin-bottom:45px}.panel{background:#1c1b35;border:1px solid #5e5577;border-radius:20px;padding:22px;box-shadow:0 16px 50px #0003;min-width:0}.panel h2{font-size:22px;letter-spacing:-.05em;margin:0 0 10px}.panel h3{font-size:16px;margin:17px 0 9px}.headline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.clock{font-size:27px;color:var(--cyan);font-variant-numeric:tabular-nums;font-weight:850}.hint{color:var(--muted);line-height:1.75;font-size:12px}.banner{border:1px solid #786996;background:#2a2646;border-radius:13px;padding:17px;margin:12px 0;color:#e7dff7;line-height:1.75}.banner b{color:var(--cyan)}.prompt{font-size:clamp(24px,4vw,38px);font-weight:900;line-height:1.28;letter-spacing:-.05em}.field{width:100%;background:#10132a;border:1px solid #8b7ba0;border-radius:12px;color:var(--ink);padding:16px;font-size:16px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1}.choice{width:100%;text-align:left;margin:7px 0;background:#2e2647;padding:16px 18px;font-size:15px}.choice.selected{border-color:var(--cyan);background:#3e4267}.stage{min-height:310px}.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.answer-grid button{min-height:83px;font-size:14px;text-align:center;overflow-wrap:anywhere}.people{display:flex;flex-wrap:wrap;gap:7px}.person{padding:9px 11px;border:1px solid #605977;background:#27243c;border-radius:25px;font-size:11px}.person strong{color:var(--cyan)}.scoreboard{border-collapse:collapse;width:100%;font-size:12px}.scoreboard th,.scoreboard td{border-bottom:1px solid #4b4665;padding:10px 4px;text-align:left}.scoreboard td:last-child{text-align:right;color:var(--cyan);font-weight:900}.chat{height:170px;overflow:auto;padding:9px;border:1px solid #564d70;background:#121228;border-radius:11px;line-height:1.65}.chat p{margin:6px 0;font-size:12px;overflow-wrap:anywhere}.chat b{color:var(--pink)}.chat-form{display:flex;gap:7px;margin-top:9px}.chat-form input{min-width:0;flex:1;background:#13152c;border:1px solid #665a7a;color:white;padding:12px;border-radius:9px}.result{border:1px solid #8f779a;border-radius:13px;padding:18px;background:#322941;margin-top:20px}.result h3{font-size:18px;color:var(--cyan);margin:0 0 12px}.result-row{padding:10px 0;border-top:1px solid #665471;line-height:1.65}.result-row strong{color:var(--pink)}.drawbox{background:#ffffff;border:3px solid #d9bfef;border-radius:15px;overflow:hidden;touch-action:none;max-width:650px;margin:auto}.drawbox canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}.drawbox svg{width:100%;display:block;background:#fff}.draw-thumb{background:#fff;border:2px solid #665977;border-radius:11px;padding:4px;aspect-ratio:4/3;width:100%}.draw-thumb svg{width:100%;height:100%}.selection-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}.selection-grid button{min-width:0;overflow-wrap:anywhere}.selection-grid .art-option{padding:8px}.selection-grid .art-option.selected,.selection-grid button.selected{outline:3px solid var(--cyan)}.shirt{background:#faf3ff;color:#222039;clip-path:polygon(15% 1%,36% 0,43% 8%,57% 8%,64% 0,84% 1%,100% 24%,85% 40%,78% 30%,78% 100%,22% 100%,22% 30%,15% 40%,0 24%);padding:48px 15px 25px;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}.shirt .draw-thumb{max-width:220px;border:0}.shirt b{text-align:center;font-size:15px;overflow-wrap:anywhere}.battle-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:15px}.battle-grid button{padding:10px}.waiting{font-size:17px;color:var(--purple);margin:45px 0;text-align:center;line-height:1.5}.topnote{font-size:12px;color:#c3b5d0;margin-top:8px}.error{color:#ffb6b6;border:1px solid #bd6675;padding:13px;border-radius:9px;margin:10px 0}.hidden{display:none!important}.connected{color:var(--cyan)}footer{text-align:center;padding:0 0 44px;color:#958ca9;font-size:11px;line-height:1.8}.projector .layout{grid-template-columns:1fr}.projector aside{display:none}.projector .stage{min-height:65vh}.projector .hero{padding:30px 0}.projector .panel h2{font-size:30px}@media(max-width:780px){.layout{grid-template-columns:1fr}.panel{padding:17px}.hero{padding:22px 0}.selection-grid{grid-template-columns:1fr 1fr}.answer-grid{grid-template-columns:1fr}.projector aside{display:none}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body><div class="wrap">
+<nav><a class="brand" href="/jakbox/">Jak<span>Box</span> ✳</a><a href="/jakbox/">← ALL GAMES</a></nav>
+<header class="hero"><div class="eyebrow">PRIVATE PARTY ROOM · LIVE MULTIPLAYER BETA</div><h1 id="title">Connecting...</h1><p class="sub" id="subtitle">Your phone is your controller. Everyone shares the same room.</p>
+<div class="status"><span class="pill roomcode" id="code">ROOM —</span><button id="copy">Copy invite link</button><button id="display">Presentation mode</button><span class="pill" id="network">Connecting…</span></div></header>
+<div class="layout"><main class="panel"><div class="headline"><h2 id="phase">Waiting for players</h2><span class="clock" id="clock">—</span></div><div class="stage" id="stage"><p class="waiting">Connecting to the party…</p></div><div class="error hidden" role="alert" id="error"></div></main>
+<aside><section class="panel"><h2>Party roster</h2><div class="people" id="players"></div><div class="actions" id="lobbyactions"></div><h3>Scores</h3><table class="scoreboard" id="scores"></table><h3>How to play</h3><p class="hint" id="rules"></p></section>
+<section class="panel" style="margin-top:17px"><h2>Party chat</h2><div class="chat" id="chat"></div><form id="chat-form" class="chat-form"><input id="chattext" maxlength="300" placeholder="Say something…" autocomplete="off" aria-label="Chat message"><button type="submit">Send</button></form></section></aside></div>
+<footer>Independent, unofficial party-game adaptations. Not affiliated with Jackbox Games, Inc. Game mechanics and score formats are customized for JakBox.</footer></div>
+<script>
+(function(){'use strict';
+const $=id=>document.getElementById(id),escapeHTML=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const code=new URLSearchParams(location.search).get('code')?.trim().toUpperCase();
+if(!code||!/^[A-HJ-NP-Z2-9]{6}$/.test(code)){location.replace('/jakbox/');return;}
+const names={'jak:clash':'Prompt Clash','jak:bluff':'Truth Trap','jak:draw':'Sketch Bluff','jak:split':'Split Vote','jak:tee':'Shirt Showdown'};
+const guides={
+ 'jak:clash':'Two writers answer a funny prompt. Everyone else votes for the better answer. Four rounds; server awards points to top-voted writers. Beta format based on the published Quiplash core loop.',
+ 'jak:bluff':'Invent a believable but false answer to a real fact. Then pick the true answer from your friends’ lies. Earn points for finding truth or fooling another player. Four rounds.',
+ 'jak:draw':'One artist gets a private drawing prompt. Everyone else invents a fake title. Guess the genuine prompt from all titles and win points for successful bluffs. Everyone takes a turn drawing.',
+ 'jak:split':'One writer completes an unusual hypothetical. Everyone else votes yes or no. The writer scores for making the vote as evenly split as possible. Everyone writes once.',
+ 'jak:tee':'Everyone draws one illustration and writes a slogan, then combines a drawing and slogan into a T-shirt. Designs compete head-to-head while other players vote. Artists, slogan writers and designers share points.'
+};
+let nick=localStorage.getItem('jakbox_name')||'';
+if(!nick){nick=(prompt('Choose your JakBox nickname (max 24 letters):','Player')||'Player').trim().slice(0,24)||'Player';localStorage.setItem('jakbox_name',nick);}
+const state={id:sessionStorage.getItem('jakbox_tab_session')||crypto.randomUUID(),socket:null,data:null,retry:0,selected:null,drawing:[],pen:null,lastStage:'',strokeActive:false};
+sessionStorage.setItem('jakbox_tab_session',state.id);
+const token=sessionStorage.getItem('dp3_host_'+code)||'';
+$('code').textContent='ROOM '+code;
+$('copy').onclick=()=>{const link=location.origin+'/jakbox/room/?code='+encodeURIComponent(code);if(!navigator.clipboard){prompt('Copy room invite:',link);return;}navigator.clipboard.writeText(link).then(()=>{$('copy').textContent='Copied!';setTimeout(()=>$('copy').textContent='Copy invite link',1500);}).catch(()=>prompt('Copy room invite:',link));};
+$('display').onclick=()=>{document.body.classList.toggle('projector');$('display').textContent=document.body.classList.contains('projector')?'Exit presentation':'Presentation mode';};
+function flash(msg){$('error').textContent=msg;$('error').classList.remove('hidden');}
+function send(msg){if(state.socket?.readyState===WebSocket.OPEN)state.socket.send(JSON.stringify(msg));else flash('Connection lost. Reconnecting…');}
+function action(msg){send({type:'game_action',action:msg});}
+function connect(){
+ const old=state.socket;if(old&&(old.readyState===WebSocket.OPEN||old.readyState===WebSocket.CONNECTING))return;
+ $('network').textContent='Connecting…';
+ const endpoint=(location.protocol==='https:'?'wss:':'ws:')+'//'+location.host+'/api/rooms/'+code+'/socket?name='+encodeURIComponent(nick)+'&sessionId='+encodeURIComponent(state.id)+'&hostToken='+encodeURIComponent(token);
+ const ws=new WebSocket(endpoint);state.socket=ws;
+ ws.onopen=()=>{state.retry=0;$('network').textContent='● Connected';$('network').classList.add('connected');$('error').classList.add('hidden');};
+ ws.onmessage=event=>{try{const d=JSON.parse(event.data);if(d.type==='error'){flash(d.message);return;}if(d.type!=='state')return;
+ if(!d.room.gameId.startsWith('jak:')){flash('That room belongs to Devil’s Plan. Please join from its game hub.');return;}
+ const key=d.match?.id+':'+d.match?.round+':'+d.match?.phase;
+ if(key!==state.lastStage){state.lastStage=key;state.selected=null;state.drawing=[];state.pen=null;state.strokeActive=false;}
+ state.data=d;render();
+ }catch(e){console.error('Room update error',e);}};
+ ws.onclose=()=>{if(state.socket!==ws)return;$('network').textContent='Disconnected; reconnecting…';$('network').classList.remove('connected');setTimeout(connect,Math.min(1000*2**Math.min(state.retry++,4),15000));};
+ ws.onerror=()=>{$('network').textContent='Connection error';};
+}
+function meReady(){return !!state.data?.players.find(p=>p.id===state.id)?.ready;}
+function pname(id){return escapeHTML(state.data?.match?.names[id]||state.data?.players.find(p=>p.id===id)?.name||'Player');}
+function stageText(m){
+ if(!m)return 'Party lobby';
+ return ({write:'Write your answer',lie:'Invent a plausible lie',draw:'Sketch a drawing',fake:'Make up a title',vote:'Cast your vote',slogan:'Write a slogan',compose:'Create your shirt',battle:'Shirt showdown',result:'Round results',complete:'Final scores'})[m.phase]||m.phase;
+}
+function pending(m){return m.mySubmitted?'<p class="waiting">✓ Submitted. Waiting for the rest of the party.</p>':'';}
+function textForm(placeholder,label){return '<form id="entry-form"><textarea class="field" id="entry" rows="3" maxlength="130" placeholder="'+escapeHTML(placeholder)+'" aria-label="'+escapeHTML(label)+'" required></textarea><div class="actions"><button class="primary" type="submit">Lock in answer →</button></div></form>';}
+function responseButtons(m,label){
+ const options=m.options||[];
+ return '<p class="hint">'+escapeHTML(label)+'</p><div class="answer-grid">'+options.map(o=>'<button type="button" class="choice'+(state.selected===o.id?' selected':'')+'" data-pick="'+escapeHTML(o.id)+'" '+(m.blockedOptionId===o.id?'disabled':'')+'>'+escapeHTML(o.text)+'</button>').join('')+'</div>'+(m.mySubmitted?pending(m):'<div class="actions"><button class="primary" data-submit-vote '+(state.selected===null?'disabled':'')+'>Submit vote →</button></div>');
+}
+function renderResult(m){
+ let rows='';
+ for(const r of m.results||[]){
+  if(m.gameId==='jak:clash')rows+='<div class="result-row"><strong>'+pname(r.id)+'</strong>: '+escapeHTML(r.answer)+' · '+r.votes+' vote(s) '+(r.winner?'🏆':'')+'</div>';
+  else if(['jak:bluff','jak:draw'].includes(m.gameId))rows+='<div class="result-row">'+(r.kind==='truth'?'<strong>✓ TRUE ANSWER</strong>':'Fake by '+pname(r.author))+': '+escapeHTML(r.text)+' · '+r.votes+' pick(s)</div>';
+  else if(m.gameId==='jak:split')rows+='<div class="result-row"><strong>'+pname(r.id)+'</strong>: '+escapeHTML(r.fill)+' · Yes '+r.yes+' / No '+r.no+' · +'+r.points+' points</div>';
+  else if(m.gameId==='jak:tee')rows+='<div class="result-row">'+pname(r.id)+' · '+r.votes+' votes '+(r.win?'🏆':'')+'</div>';
+ }
+ return '<div class="result"><h3>Round '+m.round+' results</h3>'+rows+'</div>';
+}
+function svgDrawing(strokes){
+ const lines=(strokes||[]).filter(x=>Array.isArray(x)&&x.length>0).map(line=>'<polyline fill="none" stroke="#27213b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" points="'+line.map(p=>Number(p[0])+','+Number(p[1])).join(' ')+'"/>').join('');
+ return '<svg viewBox="0 0 1000 1000" role="img" aria-label="Player drawing" preserveAspectRatio="xMidYMid meet" style="background:#fff;display:block;width:100%;height:auto"><rect width="1000" height="1000" fill="#fff"/>'+lines+'</svg>';
+}
+function editor(){
+ return '<div class="drawbox"><canvas id="sketch" width="600" height="450" aria-label="Drawing canvas"></canvas></div><div class="actions"><button id="undo" type="button">Undo stroke</button><button id="clear" type="button">Clear drawing</button><button class="primary" id="send-art" type="button">Submit drawing →</button></div><p class="hint">Draw using a finger, mouse, or stylus. Your art is shared when you submit.</p>';
+}
+function showClash(m){
+ if(m.phase==='write'){
+  const writer=m.contestants.includes(state.id);
+  return '<div class="banner">Your writers: <b>'+m.contestants.map(pname).join(' vs ')+'</b></div><p class="prompt">'+escapeHTML(m.prompt)+'</p>'+ (writer?(m.mySubmitted?pending(m):textForm('Your funniest answer…','Funny answer')):'<p class="waiting">You’re the audience this round. Get ready to vote.</p>');
+ }
+ if(m.phase==='vote')return '<p class="prompt">'+escapeHTML(m.prompt)+'</p>'+(m.contestants.includes(state.id)?'<p class="waiting">Your answer is competing. The other players are voting.</p>':responseButtons(m,'Pick the response you like best.'));
+ return renderResult(m);
+}
+function showBluff(m){
+ if(m.phase==='lie')return '<p class="prompt">'+escapeHTML(m.question)+'</p><p class="hint">Write a convincing false answer. Do not submit the actual truth.</p>'+(m.mySubmitted?pending(m):textForm('Your fake answer…','Believable lie'));
+ if(m.phase==='vote')return '<p class="prompt">'+escapeHTML(m.question)+'</p>'+ (m.mySubmitted?pending(m):responseButtons(m,'Which of these is the genuine fact? Your own lie is not eligible.'));
+ return '<div class="banner">Genuine answer: <b>'+escapeHTML(m.truth||'')+'</b></div>'+renderResult(m);
+}
+function showDraw(m){
+ if(m.phase==='draw'){
+  if(m.artist===state.id)return '<div class="banner">Your secret prompt: <b>'+escapeHTML(m.prompt)+'</b></div>'+ (m.mySubmitted?pending(m):editor());
+  return '<p class="waiting">'+pname(m.artist)+' is drawing. You’ll invent a convincing title next.</p>';
+ }
+ const art='<div class="drawbox">'+svgDrawing(m.picture||[])+'</div>';
+ if(m.phase==='fake')return art+(m.artist===state.id?'<p class="waiting">Your friends are inventing decoy titles.</p>':m.mySubmitted?pending(m):textForm('Pretend title for this drawing…','Fake title'));
+ if(m.phase==='vote')return art+(m.artist===state.id?'<p class="waiting">The room is guessing your secret prompt!</p>':m.mySubmitted?pending(m):responseButtons(m,'Pick the original prompt, not a fake title.'));
+ return '<div class="banner">The original prompt was <b>'+escapeHTML(m.prompt)+'</b>.</div>'+art+renderResult(m);
+}
+function fillScenario(template,word){return escapeHTML(template).replace('_____', '<b style="color:var(--cyan)">'+escapeHTML(word||'_____')+'</b>');}
+function showSplit(m){
+ if(m.phase==='write')return '<p class="prompt">'+fillScenario(m.scenario,'_____')+'</p>'+(m.author===state.id?(m.mySubmitted?pending(m):textForm('Fill the blank with something divisive…','Scenario completion')):'<p class="waiting">'+pname(m.author)+' is writing the scenario.</p>');
+ if(m.phase==='vote')return '<p class="prompt">'+fillScenario(m.scenario,m.fill)+'</p>'+(m.author===state.id?'<p class="waiting">The room is debating your scenario.</p>':m.mySubmitted?pending(m):'<div class="actions"><button data-split="yes">YES</button><button data-split="no">NO</button></div>');
+ return '<p class="prompt">'+fillScenario(m.scenario,m.fill)+'</p>'+renderResult(m);
+}
+function shirt(m,id){
+ const s=m.shirts?.[id];if(!s)return '<div class="shirt">No shirt submitted</div>';
+ return '<div class="shirt"><div class="draw-thumb">'+svgDrawing(m.art?.[s.artId]||[])+'</div><b>'+escapeHTML(m.slogans?.[s.sloganId]||'')+'</b></div>';
+}
+function showTee(m){
+ if(m.phase==='draw')return '<div class="banner">Draw one illustration to contribute to the shirt designs.</div>'+(m.mySubmitted?pending(m):editor());
+ if(m.phase==='slogan')return '<div class="banner">Write an original slogan. Everyone contributes one.</div>'+(m.mySubmitted?pending(m):textForm('Your outrageous shirt slogan…','T-shirt slogan'));
+ if(m.phase==='compose'){
+  if(m.mySubmitted)return pending(m);
+  return '<div class="banner">Select a drawing and a slogan to combine into your own shirt.</div><h3>Pick a drawing</h3><div class="selection-grid">'+m.ids.map(id=>'<button data-art="'+escapeHTML(id)+'" class="art-option'+(state.selected?.artId===id?' selected':'')+'">'+svgDrawing(m.art?.[id]||[])+'</button>').join('')+'</div><h3>Pick a slogan</h3><div class="selection-grid">'+m.ids.map(id=>'<button data-slogan="'+escapeHTML(id)+'" class="'+(state.selected?.sloganId===id?'selected':'')+'">'+escapeHTML(m.slogans?.[id]||'')+'</button>').join('')+'</div><div class="actions"><button class="primary" id="send-shirt" '+(!state.selected?.artId||!state.selected?.sloganId?'disabled':'')+'>Create my shirt →</button></div>';
+ }
+ const pair=m.battlePair||[];
+ let out='<p class="hint">Design battle '+m.round+'. Vote for the shirt that deserves to win.</p><div class="battle-grid">'+pair.map(id=>'<button data-pick="'+escapeHTML(id)+'" class="'+(state.selected===id?'choice selected':'choice')+'" '+(m.phase==='result'||pair.includes(state.id)||m.mySubmitted?'disabled':'')+'>'+shirt(m,id)+'<div style="padding-top:12px">'+pname(id)+'</div></button>').join('')+'</div>';
+ if(m.phase==='battle')out+=pair.includes(state.id)?'<p class="waiting">Your shirt is competing. Other players vote.</p>':m.mySubmitted?pending(m):'<div class="actions"><button class="primary" data-submit-vote '+(state.selected===null?'disabled':'')+'>Submit vote →</button></div>';
+ else out+=renderResult(m);
+ return out;
+}
+function render(){
+ const d=state.data;if(!d)return;
+ const m=d.match;
+ $('title').textContent=names[d.room.gameId]||'JakBox room';
+ $('subtitle').textContent='Unofficial original party-game adaptations · '+d.players.length+'/'+d.room.maxPlayers+' connected';
+ $('rules').textContent=guides[d.room.gameId]||'';
+ $('players').innerHTML=d.players.map(p=>'<span class="person">'+(p.host?'♛ ':'')+escapeHTML(p.name)+(p.id===state.id?' (you)':'')+' <strong>'+(p.ready?'✓ Ready':'○ Waiting')+'</strong></span>').join('');
+ $('scores').innerHTML='<tr><th>Player</th><th>Points</th></tr>'+(m?m.ids.map(id=>'<tr><td>'+pname(id)+'</td><td>'+m.points[id]+'</td></tr>').join(''):'<tr><td colspan="2">Not started</td></tr>');
+ $('phase').textContent=stageText(m);
+ $('clock').textContent=m?.deadline?Math.max(0,Math.ceil((m.deadline-Date.now())/1000))+'s':'—';
+ const actions=$('lobbyactions');actions.innerHTML='';
+ if(!m||m.phase==='complete'){
+  actions.innerHTML='<button data-ready>'+ (meReady()?'✓ Ready (undo)':'I’m ready')+'</button>'+(d.isHost?'<button class="primary" data-start>Start '+(m?'new game':'game')+'</button>':'');
+ }else if(m.phase==='result'){
+  actions.innerHTML=d.isHost?'<button class="primary" data-next>Next round →</button>':'<p class="hint">Waiting for the host to continue.</p>';
+ }else actions.innerHTML='<span class="pill">Game underway</span>';
+ const view=$('stage');
+ if(!m){view.innerHTML='<div class="banner"><b>Welcome to your party room!</b><p>Copy the invite link and send it to your friends. Every player presses Ready, then the host starts the game.</p></div><p class="hint">The score screen can be shown on a TV using Presentation mode. Guests can answer from their phones. JakBox is not connected to jackbox.tv.</p>';}
+ else if(m.phase==='complete'){
+  const best=Math.max(...Object.values(m.points));
+  const win=m.ids.filter(id=>m.points[id]===best);
+  view.innerHTML='<div class="result"><h2>Party complete! 🎉</h2><div class="prompt">'+win.map(pname).join(', ')+'</div><p>Highest total score: '+best+' points. Everyone can ready up for a rematch.</p></div>';
+ }else{
+  const displays={'jak:clash':showClash,'jak:bluff':showBluff,'jak:draw':showDraw,'jak:split':showSplit,'jak:tee':showTee};
+  view.innerHTML=displays[d.room.gameId]?.(m)||'<p class="waiting">Game updating…</p>';
+  if($('sketch'))bindDrawing();
+ }
+ const chat=$('chat'),nearBottom=chat.scrollHeight-chat.scrollTop<=chat.clientHeight+60;
+ chat.innerHTML=d.chat.map(x=>'<p><b>'+escapeHTML(x.name)+':</b> '+escapeHTML(x.text)+'</p>').join('')||'<p class="hint">No messages yet.</p>';
+ if(nearBottom)chat.scrollTop=chat.scrollHeight;
+}
+function bindDrawing(){
+ const canvas=$('sketch');if(!canvas)return;
+ const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#25223b';
+ const paint=strokes=>{
+  for(const line of strokes){if(!line.length)continue;ctx.beginPath();line.forEach(([x,y],i)=>{const X=x/1000*canvas.width,Y=y/1000*canvas.height;if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y);});ctx.stroke();}
+ };
+ paint(state.drawing);
+ const pos=e=>{const rect=canvas.getBoundingClientRect();return [Math.round(Math.max(0,Math.min(1000,(e.clientX-rect.left)/rect.width*1000))),Math.round(Math.max(0,Math.min(1000,(e.clientY-rect.top)/rect.height*1000)))];};
+ canvas.onpointerdown=e=>{if(state.drawing.length>=85)return;canvas.setPointerCapture(e.pointerId);state.pen=[pos(e)];state.drawing.push(state.pen);state.strokeActive=true;};
+ canvas.onpointermove=e=>{if(!state.strokeActive||!state.pen)return;const p=pos(e),last=state.pen.at(-1);if(Math.hypot(p[0]-last[0],p[1]-last[1])<5)return;if(state.pen.length>=280)return;state.pen.push(p);paint([state.pen.slice(-2)]);};
+ const end=()=>{if(!state.pen)return;if(state.pen.length===1){const [x,y]=state.pen[0];state.pen.push([Math.min(1000,x+1),Math.min(1000,y+1)]);}state.pen=null;state.strokeActive=false;};
+ canvas.onpointerup=end;canvas.onpointercancel=end;canvas.onlostpointercapture=end;
+ $('undo').onclick=()=>{state.drawing.pop();bindDrawing();};
+ $('clear').onclick=()=>{state.drawing=[];bindDrawing();};
+ $('send-art').onclick=()=>{if(!state.drawing.length){flash('Draw at least one stroke first.');return;}action({type:'art',strokes:state.drawing});};
+}
+$('chat-form').onsubmit=e=>{e.preventDefault();const field=$('chattext'),value=field.value.trim();if(value){send({type:'chat',text:value});field.value='';}};
+document.addEventListener('submit',e=>{if(e.target.id!=='entry-form')return;e.preventDefault();const input=$('entry'),value=input.value.trim();if(!value)return;const game=state.data.match.gameId,phase=state.data.match.phase;action({type:phase==='slogan'?'slogan':'write',text:value});});
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.hasAttribute('data-ready'))return send({type:'ready',ready:!meReady()});
+ if(b.hasAttribute('data-start'))return send({type:'start_match'});
+ if(b.hasAttribute('data-next'))return send({type:'next_round'});
+ if(b.dataset.pick!==undefined){state.selected=b.dataset.pick;render();return;}
+ if(b.hasAttribute('data-submit-vote'))return action({type:'vote',choice:state.selected});
+ if(b.dataset.split)return action({type:'vote',choice:b.dataset.split});
+ if(b.dataset.art!==undefined){state.selected={...(typeof state.selected==='object'&&state.selected||{}),artId:b.dataset.art};render();return;}
+ if(b.dataset.slogan!==undefined){state.selected={...(typeof state.selected==='object'&&state.selected||{}),sloganId:b.dataset.slogan};render();return;}
+ if(b.id==='send-shirt')return action({type:'compose',artId:state.selected.artId,sloganId:state.selected.sloganId});
+});
+setInterval(()=>{const m=state.data?.match;if(m?.deadline)$('clock').textContent=Math.max(0,Math.ceil((m.deadline-Date.now())/1000))+'s';},250);
+connect();
+})();
+</script></body></html>

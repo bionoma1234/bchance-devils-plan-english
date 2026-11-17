@@ -1,11 +1,12 @@
 import { createMatch, act, advanceIfDue, view } from './multiplayer.js';
+import { JAK_GAMES, isJak, createJakMatch, actJak, advanceJakIfDue, viewJak } from './jakbox.js';
 import { DurableObject } from 'cloudflare:workers';
 
-const GAME_IDS = new Set(['heavy', 'roulette', 'poker', 'square', 'cube']);
+const GAME_IDS = new Set(['heavy', 'roulette', 'poker', 'square', 'cube',...Object.keys(JAK_GAMES)]);
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CHAT_LIMIT = 30;
 const ROOM_LIFETIME_MS = 24 * 60 * 60 * 1000;
-const ROOM_MAX_PLAYERS = { heavy: 8, roulette: 6, poker: 16, square: 16, cube: 6 };
+const ROOM_MAX_PLAYERS = { heavy: 8, roulette: 6, poker: 16, square: 16, cube: 6, ...Object.fromEntries(Object.entries(JAK_GAMES).map(([id,r])=>[id,r.max])) };
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -142,7 +143,7 @@ export class GameRoom extends DurableObject {
     return {
       type: 'state', room: { code: meta.code, gameId: meta.gameId, maxPlayers: ROOM_MAX_PLAYERS[meta.gameId] },
       isHost: Boolean(ws.deserializeAttachment()?.host),
-      players, chat, round: liveRound, match: view(match,ws.deserializeAttachment()?.sessionId),
+      players, chat, round: liveRound, match: match ? (isJak(match.gameId) ? viewJak(match,ws.deserializeAttachment()?.sessionId) : view(match,ws.deserializeAttachment()?.sessionId)) : null,
     };
   }
 
@@ -196,7 +197,7 @@ export class GameRoom extends DurableObject {
         return;
       }
       try {
-        const match=createMatch(meta.gameId,people);
+        const match=isJak(meta.gameId) ? createJakMatch(meta.gameId,people) : createMatch(meta.gameId,people);
         await this.ctx.storage.put('match',match);
         await this.scheduleMatch(match);
         await this.broadcast();
@@ -208,10 +209,10 @@ export class GameRoom extends DurableObject {
     if (msg.type === 'game_action' || msg.type === 'next_round') {
       const match = await this.ctx.storage.get('match');
       if (!match) return;
-      const wasDue=advanceIfDue(match);
-      const accepted = msg.type === 'next_round'
-        ? (client.host && act(match,client.sessionId,{type:'next'}))
-        : act(match,client.sessionId,msg.action);
+      const fnAct=isJak(match.gameId)?actJak:act;
+      const fnDue=isJak(match.gameId)?advanceJakIfDue:advanceIfDue;
+      const wasDue=fnDue(match);
+      const accepted=msg.type==='next_round' ? (client.host && fnAct(match,client.sessionId,{type:'next'})) : fnAct(match,client.sessionId,msg.action);
       if (wasDue || accepted) {
         await this.ctx.storage.put('match',match);
         await this.scheduleMatch(match);
@@ -260,7 +261,7 @@ export class GameRoom extends DurableObject {
     if (!meta || meta.expiresAt<=Date.now()) return;
     const match=await this.ctx.storage.get('match');
     if (!match) return;
-    if (advanceIfDue(match)) {
+    if ((isJak(match.gameId)?advanceJakIfDue:advanceIfDue)(match)) {
       await this.ctx.storage.put('match',match);
       await this.scheduleMatch(match);
       await this.broadcast();

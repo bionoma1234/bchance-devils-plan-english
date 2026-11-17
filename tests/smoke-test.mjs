@@ -1,3 +1,4 @@
+import * as JakEngines from '../src/jakbox.js';
 import * as GameEngines from '../src/multiplayer.js';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -26,10 +27,11 @@ function WebSocketPair(){lastPair={0:new MockWS,1:new MockWS};return lastPair}
 class BaseDO{constructor(ctx,env){this.ctx=ctx;this.env=env}}
 const source=fs.readFileSync(new URL('../src/index.js', import.meta.url), 'utf8')
 .replace("import { createMatch, act, advanceIfDue, view } from './multiplayer.js';",'const { createMatch, act, advanceIfDue, view } = globalThis.GameEngines;')
+.replace("import { JAK_GAMES, isJak, createJakMatch, actJak, advanceJakIfDue, viewJak } from './jakbox.js';",'const { JAK_GAMES, isJak, createJakMatch, actJak, advanceJakIfDue, viewJak } = globalThis.JakEngines;')
 .replace("import { DurableObject } from 'cloudflare:workers';",'const DurableObject = globalThis.BaseDO;')
 .replace('export default {','const worker = {')
 .replace('export class GameRoom','class GameRoom') + '\nglobalThis.exports={worker,GameRoom};';
-const context={GameEngines,BaseDO,Response:MockResponse,Request,URL,crypto:webcrypto,WebSocketPair,Date,Math,console};
+const context={JakEngines,GameEngines,BaseDO,Response:MockResponse,Request,URL,crypto:webcrypto,WebSocketPair,Date,Math,console};
 vm.runInNewContext(source,context);
 const {worker,GameRoom}=context.exports;
 const ctx={storage:new MockStorage(),websockets:[],getWebSockets(){return this.websockets.filter(x=>!x.closed)},acceptWebSocket(ws){this.websockets.push(ws)}};
@@ -76,3 +78,34 @@ assert.equal(match.points['host-session-12345'],1);
 await room.webSocketMessage(hostWs,JSON.stringify({type:'next_round'}));
 assert.equal(guestWs.sent.at(-1).match.round,2);
 console.log('PASS: shared ready state, protected match start, synchronized answers, authoritative scoring, and next round.');
+
+const ctxJak={storage:new MockStorage(),websockets:[],getWebSockets(){return this.websockets.filter(x=>!x.closed)},acceptWebSocket(ws){this.websockets.push(ws)}};
+const roomJak=new GameRoom(ctxJak,{});
+let rr=await roomJak.fetch(new Request('https://room.internal/init',{method:'POST',body:JSON.stringify({code:'JKL234',gameId:'jak:clash',hostToken:'JAKSECRET'})}));
+assert.equal(rr.status,201);
+const mkJoin=(name,token,session)=>new Request('https://room.internal/connect?name='+name+'&hostToken='+token+'&sessionId='+session,{headers:{Upgrade:'websocket'}});
+for(const [name,token,session] of [['One','JAKSECRET','jak-001-session'],['Two','','jak-002-session'],['Three','','jak-003-session']]){
+ rr=await roomJak.fetch(mkJoin(name,token,session));assert.equal(rr.status,101);
+}
+const playersJak=ctxJak.websockets;
+for(const ws of playersJak)await roomJak.webSocketMessage(ws,JSON.stringify({type:'ready',ready:true}));
+await roomJak.webSocketMessage(playersJak[0],JSON.stringify({type:'start_match'}));
+let snap=playersJak[0].sent.at(-1);
+assert.equal(snap.room.gameId,'jak:clash');
+assert.equal(snap.match.phase,'write');
+const contestants=snap.match.contestants;
+for(let i=0;i<2;i++){
+ const ws=playersJak.find(x=>x.deserializeAttachment().sessionId===contestants[i]);
+ await roomJak.webSocketMessage(ws,JSON.stringify({type:'game_action',action:{type:'write',text:'Funny '+i}}));
+}
+snap=playersJak[0].sent.at(-1);
+assert.equal(snap.match.phase,'vote');
+assert.ok(snap.match.options.every(o=>!Object.hasOwn(o,'author')));
+const voting=playersJak.find(x=>!contestants.includes(x.deserializeAttachment().sessionId));
+await roomJak.webSocketMessage(voting,JSON.stringify({type:'game_action',action:{type:'vote',choice:snap.match.options[0].id}}));
+snap=playersJak[0].sent.at(-1);
+assert.equal(snap.match.phase,'result');
+assert.ok(Object.values(snap.match.points).some(x=>x>0));
+await roomJak.webSocketMessage(playersJak[0],JSON.stringify({type:'next_round'}));
+assert.equal(playersJak[0].sent.at(-1).match.round,2);
+console.log('PASS: JakBox websocket room start, independent lobby, hidden responses, synchronized vote and host next');
