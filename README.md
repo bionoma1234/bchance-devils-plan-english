@@ -74,17 +74,27 @@ All five game selections can now create a private room code with synchronized we
 The new multiplayer mode is an independent interpretation of documented gameplay, not a complete recreation of the referenced website. Live cross-browser behavior and visual parity still need manual verification.
 
 
-## JakBox: five independent party games
+## JakBox: six independent party games
 
 - URL: \`/jakbox/\`; room controller: \`/jakbox/room/?code=ABCDEF\`.
-- Five distinct game modes: Prompt Clash (Quiplash-inspired), Truth Trap (Fibbage-inspired), Sketch Bluff (Drawful-inspired), Split Vote (Split the Room-inspired), Shirt Showdown (Tee K.O.-inspired).
+- Six distinct game modes: Prompt Clash (Quiplash-inspired), Truth Trap (Fibbage-inspired), Sketch Bluff (Drawful-inspired), Split Vote (Split the Room-inspired), Shirt Showdown (Tee K.O.-inspired), Fake Out (Fakin’ It-inspired).
 - Mechanics studied from the official Jackbox Games pages:
   - https://www.jackboxgames.com/games/quiplash
   - https://www.jackboxgames.com/games/fibbage-4
   - https://www.jackboxgames.com/games/the-jackbox-party-pack-1/drawful
   - https://www.jackboxgames.com/games/split-the-room
   - https://www.jackboxgames.com/games/tee-k-o-2
+  - https://www.jackboxgames.com/games/the-jackbox-party-pack-3/fakin-it
 - Differences from the commercial products: new prompts, simplified rounds, custom scoring, no licensed assets/audio/host characters, no audience mode or proprietary Jackbox integrations. Six-character BChance room codes, not Jackbox's original four-letter codes.
 - Multiplayer backend: reuses \`GameRoom\` Cloudflare Durable Object for room create/join, per-player private state, ready checks, in-room chat, timed stage transitions, server-authoritative vote scoring, scoring and reconnection. The beta needs multi-device acceptance testing.
 - Drawing: touch-enabled 2D stroke input with server-side point validation; graphics are player-generated and are not copied assets. No room at \`jackbox.tv\` can be joined with a JakBox code.
 - Names and source references are included solely to document gameplay inspiration. This independent project is not affiliated with Jackbox Games, Inc.
+
+
+### Fake Out (JakBox game 6)
+
+- 3–6 players. In each of three sets, one randomly selected player becomes the hidden Faker and every other player privately receives the same original prompt. A different Faker is selected each set.
+- Five documented Fakin’ It task categories: Hands of Truth (yes/no), Number Pressure (0–10), You Gotta Point (choose player), Face Value (emoji expression), Text You Up (freeform response).
+- The Faker sees the category but not the prompt during submissions. Once all respond, the prompt and answers are publicly revealed for discussion, followed by secret accusation voting. The round has 2 tasks with 3 players or 3 with 4–6 players. Unanimity of all non-Fakers catches the Faker, or they escape after the final task.
+- Scoring is an **original JakBox adaptation**, with no premature scoreboard reveal of the Faker. There is no original Jackbox artwork or code, and the remote mode uses digital representations of physical gestures.
+- Official reference: https://www.jackboxgames.com/games/the-jackbox-party-pack-3/fakin-it ; the newer Fakin’ It XL has additional game types and up to eight players, which are not included here.

@@ -1,3 +1,4 @@
+import { createFakerMatch, actFaker, advanceFakerIfDue, viewFaker } from './faker-game.js';
 // JakBox: original party-game adaptations informed by public gameplay descriptions.
 // Server-authoritative; no Jackbox code, assets or proprietary content.
 export const JAK_GAMES=Object.freeze({
@@ -6,6 +7,7 @@ export const JAK_GAMES=Object.freeze({
  'jak:draw':{name:'Sketch Bluff',min:3,max:8},
  'jak:split':{name:'Split Vote',min:3,max:8},
  'jak:tee':{name:'Shirt Showdown',min:3,max:8},
+ 'jak:faker':{name:'Fake Out',min:3,max:6},
 });
 export const isJak=id=>Object.hasOwn(JAK_GAMES,id);
 const prompts=Object.freeze({
@@ -124,6 +126,7 @@ function next(m){
  }else startRound(m);
 }
 export function createJakMatch(gameId,players){
+ if(gameId==='jak:faker')return createFakerMatch(players);
  const settings=JAK_GAMES[gameId];
  if(!settings)throw Error('Unrecognized JakBox game');
  if(players.length<settings.min||players.length>settings.max)throw Error(settings.name+' requires '+settings.min+'–'+settings.max+' players');
@@ -221,6 +224,7 @@ function participants(m){
  return m.ids;
 }
 export function actJak(m,id,msg){
+ if(m?.gameId==='jak:faker')return actFaker(m,id,msg);
  if(!m||!m.ids.includes(id)||!msg||typeof msg.type!=='string')return false;
  if(msg.type==='next'&&m.phase==='result'){next(m);return true;}
  if(m.phase==='result'||m.phase==='complete')return false;
@@ -273,11 +277,13 @@ export function actJak(m,id,msg){
  return false;
 }
 export function advanceJakIfDue(m,now=Date.now()){
+ if(m?.gameId==='jak:faker')return advanceFakerIfDue(m,now);
  if(!m||!m.deadline||now<m.deadline)return false;
  if(['result','complete'].includes(m.phase))return false;
  proceed(m);return true;
 }
 export function viewJak(m,id){
+ if(m?.gameId==='jak:faker')return viewFaker(m,id);
  if(!m)return null;
  const out={id:m.id,gameId:m.gameId,phase:m.phase,round:m.round,deadline:m.deadline,
  ids:m.ids,names:m.names,points:m.points,submittedIds:[],

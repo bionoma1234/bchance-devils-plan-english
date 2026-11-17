@@ -17,7 +17,7 @@ console.log('PASS: front-end JavaScript syntax, lobby navigation, and five-game 
 const jakLobby=readFileSync(new URL('../public/jakbox/index.html',import.meta.url),'utf8');
 const jakRoom=readFileSync(new URL('../public/jakbox/room/index.html',import.meta.url),'utf8');
 const mainHub=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
-for(const game of ['jak:clash','jak:bluff','jak:draw','jak:split','jak:tee']){
+for(const game of ['jak:clash','jak:bluff','jak:draw','jak:split','jak:tee','jak:faker']){
  assert.ok(jakLobby.includes(game),'JakBox card missing: '+game);
  assert.ok(jakRoom.includes(game),'JakBox room controller missing: '+game);
 }
@@ -25,4 +25,9 @@ assert.match(jakLobby,/location\.assign\('\/jakbox\/room\/\?code='/);
 assert.match(mainHub,/href="\/jakbox\/"/);
 assert.match(jakRoom,/navigator\.clipboard\.writeText/);
 assert.match(jakRoom,/onpointerdown/);
-console.log('PASS: five JakBox game cards, party-room controls, mobile drawing, and BChance Games hub');
+console.log('PASS: six JakBox game cards, party-room controls, mobile drawing, and BChance Games hub');
+
+assert.match(jakRoom,/data-fake-accuse/);
+assert.match(jakRoom,/data-fake-answer/);
+assert.match(jakRoom,/m\.isFaker/);
+console.log('PASS: Fake Out room actions, private-role display and JakBox sixth game card');

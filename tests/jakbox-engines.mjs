@@ -4,7 +4,7 @@ globalThis.crypto ??= webcrypto;
 const {JAK_GAMES,isJak,createJakMatch,actJak,advanceJakIfDue,viewJak}=await import('../src/jakbox.js');
 const people=n=>Array.from({length:n},(_,i)=>({id:'person-'+i,name:'Player '+i}));
 const strokes=[[[10,20],[40,50],[70,80]]];
-assert.equal(Object.keys(JAK_GAMES).length,5);
+assert.equal(Object.keys(JAK_GAMES).length,6);
 assert.equal(isJak('jak:tee'),true);
 assert.equal(isJak('square'),false);
 assert.throws(()=>createJakMatch('jak:clash',people(2)),/requires/);

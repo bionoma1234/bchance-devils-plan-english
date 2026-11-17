@@ -14,13 +14,14 @@
 const $=id=>document.getElementById(id),escapeHTML=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const code=new URLSearchParams(location.search).get('code')?.trim().toUpperCase();
 if(!code||!/^[A-HJ-NP-Z2-9]{6}$/.test(code)){location.replace('/jakbox/');return;}
-const names={'jak:clash':'Prompt Clash','jak:bluff':'Truth Trap','jak:draw':'Sketch Bluff','jak:split':'Split Vote','jak:tee':'Shirt Showdown'};
+const names={'jak:clash':'Prompt Clash','jak:bluff':'Truth Trap','jak:draw':'Sketch Bluff','jak:split':'Split Vote','jak:tee':'Shirt Showdown','jak:faker':'Fake Out'};
 const guides={
  'jak:clash':'Two writers answer a funny prompt. Everyone else votes for the better answer. Four rounds; server awards points to top-voted writers. Beta format based on the published Quiplash core loop.',
  'jak:bluff':'Invent a believable but false answer to a real fact. Then pick the true answer from your friends’ lies. Earn points for finding truth or fooling another player. Four rounds.',
  'jak:draw':'One artist gets a private drawing prompt. Everyone else invents a fake title. Guess the genuine prompt from all titles and win points for successful bluffs. Everyone takes a turn drawing.',
  'jak:split':'One writer completes an unusual hypothetical. Everyone else votes yes or no. The writer scores for making the vote as evenly split as possible. Everyone writes once.',
- 'jak:tee':'Everyone draws one illustration and writes a slogan, then combines a drawing and slogan into a T-shirt. Designs compete head-to-head while other players vote. Artists, slogan writers and designers share points.'
+ 'jak:tee':'Everyone draws one illustration and writes a slogan, then combines a drawing and slogan into a T-shirt. Designs compete head-to-head while other players vote. Artists, slogan writers and designers share points.',
+ 'jak:faker':'Based on the original Fakin’ It (3–6 players): everyone except the secret Faker receives the same task. Act it out or answer on your phone. Discuss, then vote for a suspect. The Faker escapes if they cannot be caught. Three sets with a different Faker each time. New original prompts and custom scoring.'
 };
 let nick=localStorage.getItem('jakbox_name')||'';
 if(!nick){nick=(prompt('Choose your JakBox nickname (max 24 letters):','Player')||'Player').trim().slice(0,24)||'Player';localStorage.setItem('jakbox_name',nick);}
@@ -52,7 +53,7 @@ function meReady(){return !!state.data?.players.find(p=>p.id===state.id)?.ready;
 function pname(id){return escapeHTML(state.data?.match?.names[id]||state.data?.players.find(p=>p.id===id)?.name||'Player');}
 function stageText(m){
  if(!m)return 'Party lobby';
- return ({write:'Write your answer',lie:'Invent a plausible lie',draw:'Sketch a drawing',fake:'Make up a title',vote:'Cast your vote',slogan:'Write a slogan',compose:'Create your shirt',battle:'Shirt showdown',result:'Round results',complete:'Final scores'})[m.phase]||m.phase;
+ return ({act:'Perform the secret task',discussion:'Discuss the evidence',write:'Write your answer',lie:'Invent a plausible lie',draw:'Sketch a drawing',fake:'Make up a title',vote:'Cast your vote',slogan:'Write a slogan',compose:'Create your shirt',battle:'Shirt showdown',result:'Round results',complete:'Final scores'})[m.phase]||m.phase;
 }
 function pending(m){return m.mySubmitted?'<p class="waiting">✓ Submitted. Waiting for the rest of the party.</p>':'';}
 function textForm(placeholder,label){return '<form id="entry-form"><textarea class="field" id="entry" rows="3" maxlength="130" placeholder="'+escapeHTML(placeholder)+'" aria-label="'+escapeHTML(label)+'" required></textarea><div class="actions"><button class="primary" type="submit">Lock in answer →</button></div></form>';}
@@ -123,6 +124,48 @@ function showTee(m){
  else out+=renderResult(m);
  return out;
 }
+
+function readableResponse(m,r){
+ if(m.category==='point')return pname(r.answer);
+ return escapeHTML(r.answer);
+}
+function fakeChoices(m){
+ if(m.category==='hands')return '<div class="answer-grid"><button data-fake-answer="true">✋ YES, raise my hand</button><button data-fake-answer="false">👇 NO, keep it down</button></div>';
+ if(m.category==='number')return '<div class="answer-grid">'+Array.from({length:11},(_,n)=>'<button data-fake-answer="'+n+'">'+n+' fingers</button>').join('')+'</div>';
+ if(m.category==='point')return '<div class="answer-grid">'+m.ids.map(id=>'<button data-fake-answer="'+escapeHTML(id)+'">👉 '+pname(id)+(id===state.id?' (me)':'')+'</button>').join('')+'</div>';
+ if(m.category==='face')return '<div class="answer-grid">'+(m.faceOptions||[]).map(emoji=>'<button data-fake-answer="'+escapeHTML(emoji)+'" style="font-size:27px">'+escapeHTML(emoji)+'</button>').join('')+'</div>';
+ return '<form id="faker-text-form"><textarea id="fake-entry" class="field" maxlength="130" rows="3" placeholder="Type an answer you can explain…" required></textarea><div class="actions"><button class="primary">Lock in response</button></div></form>';
+}
+function showFaker(m){
+ const top='<div class="banner"><b>Set '+m.setNumber+' of 3</b> · Task '+m.taskNumber+' of '+m.maxTasks+' · '+escapeHTML(m.categoryName||m.category)+'</div>';
+ if(m.phase==='act'){
+  const role=m.isFaker
+    ?'<div class="banner" style="border-color:#ffb8de"><b>🎭 YOU ARE THE FAKER!</b><p>You did not receive the task. Only the category is known. Blend in and give a plausible response. Do not tell anyone your role.</p></div>'
+    :'<div class="banner"><b>🕵️ Your private task</b><p class="prompt">'+escapeHTML(m.prompt||'')+'</p><p class="hint">Keep the exact question secret until everyone responds.</p></div>';
+  return top+role+(m.mySubmitted?pending(m):fakeChoices(m))+'<p class="topnote">After submitting, your response appears to everyone for discussion.</p>';
+ }
+ const answers='<div class="answers">'+(m.responses||[]).map(r=>'<span style="padding:11px"><strong>'+pname(r.id)+': </strong>'+readableResponse(m,r)+'</span>').join('')+'</div>';
+ const prompt='<div class="banner"><b>The real task was:</b><p class="prompt">'+escapeHTML(m.prompt||'')+'</p></div>';
+ if(m.phase==='discussion'){
+  return top+prompt+'<h3>Everyone’s responses</h3>'+answers+'<p class="waiting">Talk it over! Ask questions, defend your response, and look for the Faker. Voting opens after the discussion timer.</p>';
+ }
+ if(m.phase==='vote'){
+  return top+prompt+'<h3>Who is the Faker?</h3>'+answers+(m.mySubmitted?pending(m):'<p class="hint">Accuse one other player, not yourself. Everyone, including the Faker, gets a vote.</p><div class="answer-grid">'+m.ids.filter(id=>id!==state.id).map(id=>'<button data-fake-accuse="'+escapeHTML(id)+'">Suspect '+pname(id)+'</button>').join('')+'</div>')+'<p class="topnote">'+(m.submittedIds?.length||0)+' / '+m.ids.length+' votes submitted.</p>';
+ }
+ if(m.phase==='result'){
+  let results='<div class="result"><h3>Interrogation '+m.taskNumber+' results</h3>';
+  const tally=m.result?.counts||{};
+  results+='<div class="answers">'+m.ids.map(id=>'<span>'+pname(id)+': '+(tally[id]||0)+' accusation(s)</span>').join('')+'</div>';
+  if(m.result?.done){
+   results+='<p class="prompt">'+(m.result.caught?'🎯 Faker caught!':'🎭 The Faker escaped!')+'</p><p>The secret Faker was <strong style="color:var(--cyan)">'+pname(m.fakerId)+'</strong>.</p>';
+   results+='<p class="hint">Points are now awarded. The host can start the next set.</p>';
+  }else results+='<p>No unanimous catch this time. The Faker remains hidden. The host can start the next task.</p>';
+  results+='</div>';
+  return top+prompt+answers+results;
+ }
+ return top+'<p class="waiting">Synchronizing the deduction round…</p>';
+}
+
 function render(){
  const d=state.data;if(!d)return;
  const m=d.match;
@@ -146,7 +189,7 @@ function render(){
   const win=m.ids.filter(id=>m.points[id]===best);
   view.innerHTML='<div class="result"><h2>Party complete! 🎉</h2><div class="prompt">'+win.map(pname).join(', ')+'</div><p>Highest total score: '+best+' points. Everyone can ready up for a rematch.</p></div>';
  }else{
-  const displays={'jak:clash':showClash,'jak:bluff':showBluff,'jak:draw':showDraw,'jak:split':showSplit,'jak:tee':showTee};
+  const displays={'jak:clash':showClash,'jak:bluff':showBluff,'jak:draw':showDraw,'jak:split':showSplit,'jak:tee':showTee,'jak:faker':showFaker};
   view.innerHTML=displays[d.room.gameId]?.(m)||'<p class="waiting">Game updating…</p>';
   if($('sketch'))bindDrawing();
  }
@@ -172,9 +215,15 @@ function bindDrawing(){
  $('send-art').onclick=()=>{if(!state.drawing.length){flash('Draw at least one stroke first.');return;}action({type:'art',strokes:state.drawing});};
 }
 $('chat-form').onsubmit=e=>{e.preventDefault();const field=$('chattext'),value=field.value.trim();if(value){send({type:'chat',text:value});field.value='';}};
-document.addEventListener('submit',e=>{if(e.target.id!=='entry-form')return;e.preventDefault();const input=$('entry'),value=input.value.trim();if(!value)return;const game=state.data.match.gameId,phase=state.data.match.phase;action({type:phase==='slogan'?'slogan':'write',text:value});});
+document.addEventListener('submit',e=>{if(e.target.id==='faker-text-form'){e.preventDefault();const value=$('fake-entry')?.value.trim();if(value)action({type:'respond',answer:value});return;}if(e.target.id!=='entry-form')return;e.preventDefault();const input=$('entry'),value=input.value.trim();if(!value)return;const game=state.data.match.gameId,phase=state.data.match.phase;action({type:phase==='slogan'?'slogan':'write',text:value});});
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.fakeAnswer!==undefined){
+   const v=b.dataset.fakeAnswer,category=state.data?.match?.category;
+   const response=category==='hands'?v==='true':category==='number'?Number(v):v;
+   return action({type:'respond',answer:response});
+ }
+ if(b.dataset.fakeAccuse!==undefined)return action({type:'accuse',target:b.dataset.fakeAccuse});
  if(b.hasAttribute('data-ready'))return send({type:'ready',ready:!meReady()});
  if(b.hasAttribute('data-start'))return send({type:'start_match'});
  if(b.hasAttribute('data-next'))return send({type:'next_round'});
