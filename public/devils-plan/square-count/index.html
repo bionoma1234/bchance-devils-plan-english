@@ -1,0 +1,63 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Square Count | BChance Games</title><meta name="theme-color" content="#130f1b">
+<style>:root{color-scheme:dark;--gold:#e4bf84;--bg:#0b0a12;--line:#514450}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 40% 0,#332130,#0b0a12 65%);color:#f4edf1;font:15px system-ui,sans-serif;min-height:100vh}a{color:var(--gold)}button,input,select{font:inherit}button{padding:11px 16px;cursor:pointer;border-radius:9px;background:#332535;color:white;border:1px solid #765f67;font-weight:700}button.primary{background:linear-gradient(110deg,#ebc992,#b99258);color:#1d1620}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:3px solid #baf4df;outline-offset:3px}input{background:#111018;color:white;border:1px solid #806f77;border-radius:10px;padding:13px;max-width:180px}.wrap{width:min(1000px,calc(100% - 30px));margin:auto}nav{display:flex;gap:20px;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff22;padding:20px 0;font-size:12px;font-weight:800}nav a{text-decoration:none}.hero{text-align:center;padding:40px 0 24px}.hero small{letter-spacing:.22em;color:var(--gold);font-weight:800}.hero h1{font:700 clamp(43px,6vw,70px) Georgia,serif;margin:14px 0}.hero p{font-size:13px;color:#bcaab9;line-height:1.8}.layout{display:grid;grid-template-columns:1fr 260px;gap:20px;padding-bottom:60px}.panel{border:1px solid var(--line);border-radius:18px;padding:24px;background:linear-gradient(140deg,#1a1520,#121219)}.panel h2{font:600 22px Georgia,serif;margin:0 0 14px}.board{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;max-width:530px;margin:20px auto}.cell{aspect-ratio:1;background:#2a2532;border:1px solid #625465;display:grid;place-items:center;font-size:clamp(17px,4vw,30px);font-weight:800;font-variant-numeric:tabular-nums}.cell.marked{background:#af8350;color:#161016;border-color:#f4cb84}.score{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}.pill{border:1px solid #705965;border-radius:30px;padding:9px 12px;color:#e2ccbe;font-size:12px}.controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0}.info{font-size:12px;color:#c6b6c2;line-height:1.9}.result{border:1px solid #7c5c63;background:#2a2028;padding:17px;border-radius:12px;margin-top:16px}.result b{color:#ebc992}.status{color:#d8cbbd;text-align:center;font-size:13px}.target{color:#e8c184;font-weight:900;font-size:31px}.hidden{display:none!important}.rules li{margin-bottom:15px;line-height:1.6;color:#c6b5c2;font-size:12px}footer{font-size:11px;color:#9b8b95;padding:0 0 35px;text-align:center}@media(max-width:740px){.layout{grid-template-columns:1fr}.panel{padding:17px}.hero{padding:29px 0 18px}.cell{font-size:21px}}</style></head>
+<body><div class="wrap"><nav><a href="/devils-plan/">← DEVIL'S PLAN</a><a href="/">BCHANCE GAMES ↗</a></nav>
+<header class="hero"><small>NUMBERS · SPEED · OBSERVATION</small><h1>Square Count</h1><p>Count every rectangular region whose numbers add up to the target. Squares count, too.</p></header>
+<div class="layout"><main class="panel"><div class="score"><span class="pill" id="round">Round 1</span><span class="pill" id="score">Correct 0 / 0</span><span class="pill">Target <span class="target" id="target">?</span></span></div><div class="board" id="board"></div>
+<div class="status" id="status">Check every possible rectangle, including those that overlap.</div>
+<form class="controls" id="guessform"><input id="guess" type="number" min="0" max="1000" aria-label="Number of matching rectangles" placeholder="Your count" required><button class="primary" type="submit">Submit answer</button></form><div class="controls"><button id="next">New puzzle ↗</button><button id="show" disabled>Show next matching rectangle</button></div><div class="result hidden" id="result" aria-live="polite"></div></main>
+<aside class="panel"><h2>How to play</h2><ol class="rules"><li>Read the target number and the values on the board.</li><li>Consider any rectangular block of one or more neighboring cells.</li><li>Add the numbers within that block. Count it if the total equals the target.</li><li>Overlapping rectangles count separately. Submit the total number of matching rectangles.</li></ol><p class="info">This is an original, solo practice recreation of the documented Count the Rectangles challenge. It is not the older blank-grid counting exercise.</p><p class="info"><a href="https://playdevilplan.com/en/games" target="_blank" rel="noopener noreferrer">Reference game catalog ↗</a></p></aside></div><footer>Unofficial fan-created practice game. No affiliation with Netflix or the original game creator.</footer></div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let round=0,correct=0,attempts=0,puzzle,solutions=[],solindex=0,revealed=false;
+function solve(values,n,target){
+ const found=[];
+ for(let a=0;a<n;a++)for(let b=0;b<n;b++)for(let c=a;c<n;c++)for(let d=b;d<n;d++){
+  let sum=0;for(let r=a;r<=c;r++)for(let x=b;x<=d;x++)sum+=values[r*n+x];
+  if(sum===target)found.push({a,b,c,d});
+ }
+ return found;
+}
+function create(){
+ round++;revealed=false;solutions=[];solindex=0;
+ let n=4+Math.floor(Math.random()*2),grid,target,found;
+ for(let tries=0;tries<100;tries++){
+  grid=Array.from({length:n*n},()=>Math.floor(Math.random()*8));
+  const a=Math.floor(Math.random()*n),b=Math.floor(Math.random()*n),c=a+Math.floor(Math.random()*(n-a)),d=b+Math.floor(Math.random()*(n-b));
+  target=0;for(let r=a;r<=c;r++)for(let col=b;col<=d;col++)target+=grid[r*n+col];
+  found=solve(grid,n,target);
+  if(target>2&&found.length>1&&found.length<=35)break;
+ }
+ puzzle={n,grid,target};solutions=found;
+ $('target').textContent=target;$('round').textContent='Round '+round;$('score').textContent='Correct '+correct+' / '+attempts;
+ $('guess').value='';$('board').style.gridTemplateColumns='repeat('+n+',1fr)';$('result').classList.add('hidden');$('show').disabled=true;$('guess').disabled=false;
+ $('guessform').querySelector('button').disabled=false;
+ $('status').textContent='Count all rectangles with a total of '+target+'.';
+ draw();
+}
+function draw(){
+ $('board').innerHTML=puzzle.grid.map((v,index)=>{
+  let marked=false;
+  if(revealed&&solutions.length){const rect=solutions[(solindex+solutions.length-1)%solutions.length],r=Math.floor(index/puzzle.n),c=index%puzzle.n;marked=r>=rect.a&&r<=rect.c&&c>=rect.b&&c<=rect.d;}
+  return '<div class="cell'+(marked?' marked':'')+'">'+v+'</div>';
+ }).join('');
+}
+$('guessform').onsubmit=e=>{
+ e.preventDefault();if(revealed)return;const guess=Number($('guess').value);
+ if(!Number.isInteger(guess)||guess<0)return;
+ revealed=true;attempts++;if(guess===solutions.length)correct++;
+ $('score').textContent='Correct '+correct+' / '+attempts;
+ $('guess').disabled=true;$('guessform').querySelector('button').disabled=true;$('show').disabled=false;
+ $('result').classList.remove('hidden');
+ $('result').innerHTML='<b>'+(guess===solutions.length?'Correct!':'Not quite.')+'</b> There are '+solutions.length+' matching rectangles. Use "Show next matching rectangle" to inspect them one by one.';
+ $('status').textContent='Answer revealed. You can examine each matching region.';
+};
+$('next').onclick=create;
+$('show').onclick=()=>{
+ if(!revealed||!solutions.length)return;solindex++;draw();
+ $('status').textContent='Showing matching rectangle '+(1+(solindex-1)%solutions.length)+' / '+solutions.length+'.';
+};
+create();
+})();
+</script></body></html>
